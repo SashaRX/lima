@@ -5,23 +5,229 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LIMA — изделия из дерева</title>
 <meta name="description" content="Lima — небольшая столярная мастерская. Доски, посуда и предметы интерьера из массива бука, ручная работа.">
+<meta name="theme-color" content="#16171b">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+  :root{
+    --bg:#16171b; --panel:#1f2027; --panel-soft:#191a20;
+    --ink:#ece5d8; --muted:#a8a08f; --faint:#6f685d;
+    --line:rgba(236,229,216,.13); --line-strong:rgba(236,229,216,.28);
+    --accent:#c8a06a; --accent-ink:#16171b;
+    --serif:'Cormorant',Georgia,serif; --sans:'Manrope',system-ui,-apple-system,sans-serif;
+    --maxw:1240px; --pad:clamp(16px,4vw,48px);
+  }
   *{box-sizing:border-box;}
-  html{scroll-behavior:auto;}
-  body{margin:0;}
-  input,textarea,button,select{font-family:inherit;}
-  @keyframes limaRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-  @keyframes limaHint{0%,100%{transform:translateY(0);opacity:.75}50%{transform:translateY(6px);opacity:1}}
-  .lima-noscroll{scrollbar-width:none;-ms-overflow-style:none;}
-  .lima-noscroll::-webkit-scrollbar{display:none;width:0;height:0;}
-  /* card hover lift (ports the DC `style-hover="--lift:1"`) */
-  .lima-card{--lift:0;}
-  .lima-card:hover{--lift:1;}
-  .lima-add:hover{transform:scale(1.1)!important;}
-  [data-act]{ -webkit-tap-highlight-color:transparent; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0; color:var(--ink); font-family:var(--sans); font-weight:400; line-height:1.5;
+    background:#131419 linear-gradient(180deg,#1a1b21 0%,#16171b 55%,#131419 100%) fixed;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  img{max-width:100%;display:block;}
+  h1,h2,h3{margin:0;font-weight:400;}
+  p{margin:0;}
+  ::selection{background:var(--accent);color:var(--accent-ink);}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--pad);}
+
+  /* ---------- header ---------- */
+  .hdr{position:sticky;top:0;z-index:50;background:rgba(20,21,26,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line);}
+  .hdr-in{max-width:var(--maxw);margin:0 auto;padding:13px var(--pad);display:flex;align-items:center;gap:22px;}
+  .brand{display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none;}
+  .brand svg{height:24px;width:auto;flex:none;}
+  .brand b{font-family:var(--serif);font-weight:500;font-size:23px;letter-spacing:.08em;}
+  .nav{display:flex;gap:26px;margin-left:auto;font-size:12px;letter-spacing:.16em;text-transform:uppercase;}
+  .nav span{cursor:pointer;color:var(--muted);padding-bottom:3px;border-bottom:1px solid transparent;transition:color .2s,border-color .2s;}
+  .nav span:hover{color:var(--ink);}
+  .nav span.on{color:var(--ink);border-color:var(--accent);}
+  .actions{display:flex;align-items:center;gap:18px;margin-left:auto;}
+  .lang{display:inline-flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.14em;}
+  .lang span{cursor:pointer;color:var(--muted);}
+  .lang span.on{color:var(--ink);font-weight:600;}
+  .lang i{color:var(--faint);font-style:normal;}
+  .cart-link{display:inline-flex;align-items:center;gap:7px;cursor:pointer;color:var(--ink);font-size:13px;}
+  .cart-link svg{height:19px;width:19px;flex:none;stroke:currentColor;fill:none;stroke-width:1.4;}
+  .cart-link b{color:var(--accent);font-weight:500;}
+  .burger{display:none;flex-direction:column;gap:5px;width:24px;cursor:pointer;padding:4px 0;}
+  .burger i{height:1.5px;background:var(--ink);display:block;}
+  .nav.in-actions{margin-left:0;}
+
+  /* ---------- mobile menu ---------- */
+  .menu{position:fixed;inset:0;z-index:90;background:rgba(20,21,26,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;flex-direction:column;padding:24px var(--pad);}
+  .menu-top{display:flex;align-items:center;justify-content:space-between;}
+  .menu-top b{font-family:var(--serif);font-size:26px;letter-spacing:.07em;}
+  .menu-close{font-size:30px;line-height:1;cursor:pointer;color:var(--ink);}
+  .menu nav{display:flex;flex-direction:column;gap:4px;margin-top:42px;}
+  .menu nav span{font-family:var(--serif);font-size:32px;cursor:pointer;padding:6px 0;color:var(--ink);}
+  .menu nav span.on{color:var(--accent);}
+  .menu .m-lang{display:flex;gap:14px;margin-top:28px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;}
+  .menu .m-foot{margin-top:auto;font-size:12px;color:var(--faint);line-height:2;}
+
+  /* ---------- hero ---------- */
+  .hero{text-align:center;padding:clamp(46px,9vw,104px) var(--pad) clamp(26px,4vw,44px);position:relative;}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 120% at 50% -10%,rgba(200,160,106,.10),transparent 60%);pointer-events:none;}
+  .hero .eyebrow{position:relative;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);}
+  .hero h1{position:relative;font-family:var(--serif);font-weight:500;font-size:clamp(38px,8vw,84px);line-height:1.04;letter-spacing:-.01em;margin:16px auto 0;max-width:14ch;}
+  .hero p{position:relative;color:var(--muted);max-width:520px;margin:18px auto 0;font-size:clamp(14px,2.4vw,16px);}
+  .hero .cta{position:relative;margin-top:30px;}
+
+  /* ---------- category chips ---------- */
+  .catbar{display:flex;gap:22px;overflow-x:auto;padding:6px var(--pad) 4px;scrollbar-width:none;border-bottom:1px solid var(--line);}
+  .catbar::-webkit-scrollbar{display:none;}
+  .catbar .in{max-width:var(--maxw);margin:0 auto;display:flex;gap:22px;}
+  .chip{cursor:pointer;font-size:11px;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;flex:none;color:var(--faint);padding-bottom:6px;border-bottom:1px solid transparent;transition:color .2s,border-color .2s;}
+  .chip:hover{color:var(--muted);}
+  .chip.on{color:var(--ink);border-color:var(--accent);}
+  .count{margin-left:auto;flex:none;align-self:center;font-size:11px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;}
+
+  /* ---------- buttons ---------- */
+  .btn{display:inline-block;padding:15px 34px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border:1px solid transparent;transition:opacity .2s,background .2s,color .2s;text-align:center;}
+  .btn:hover{opacity:.9;}
+  .btn.accent{background:var(--accent);color:var(--accent-ink);}
+  .btn.ghost{border-color:var(--line-strong);color:var(--ink);}
+  .btn.ghost:hover{border-color:var(--ink);opacity:1;}
+
+  /* ---------- catalog ---------- */
+  .section{padding-top:30px;padding-bottom:90px;}
+  .grid{display:grid;gap:clamp(18px,2.4vw,30px) clamp(14px,2vw,28px);grid-template-columns:repeat(2,1fr);}
+  @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr);}}
+  @media(min-width:980px){.grid{grid-template-columns:repeat(4,1fr);}}
+  .card{cursor:pointer;}
+  .card .media{position:relative;aspect-ratio:4/5;background:var(--panel);border-radius:14px;overflow:hidden;}
+  .card .media .img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1s cubic-bezier(.2,.7,.3,1);}
+  .card:hover .media .img{transform:scale(1.045);}
+  .card .add{position:absolute;bottom:12px;right:12px;width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;box-shadow:0 4px 16px rgba(0,0,0,.3);transition:transform .2s;}
+  .card .add:hover{transform:scale(1.1);}
+  .card h3{font-family:var(--serif);font-size:clamp(17px,2.3vw,21px);line-height:1.18;margin-top:13px;}
+  .card .meta{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:6px;}
+  .card .meta .m{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .card .meta .p{font-size:14px;white-space:nowrap;flex:none;}
+
+  /* ---------- product detail ---------- */
+  .back{display:inline-flex;gap:8px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:30px;}
+  .pd{display:grid;grid-template-columns:1fr;gap:clamp(26px,5vw,56px);align-items:start;}
+  .pd>div{min-width:0;}
+  @media(min-width:860px){.pd{grid-template-columns:1.05fr 1fr;}}
+  .pd .media{position:relative;aspect-ratio:4/5;background:var(--panel);border-radius:18px;overflow:hidden;}
+  .pd .media .img{position:absolute;inset:0;background-size:cover;background-position:center;}
+  .pd .cat{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;}
+  .pd h1{font-family:var(--serif);font-size:clamp(34px,5.4vw,58px);line-height:1.03;letter-spacing:-.01em;}
+  .pd .price{font-family:var(--serif);font-size:30px;margin-top:20px;}
+  .pd .desc{color:var(--muted);line-height:1.75;margin-top:22px;max-width:460px;font-size:15px;}
+  .pd .specs{display:flex;flex-direction:column;gap:13px;margin:30px 0 0;padding:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .pd .specs div{display:flex;justify-content:space-between;font-size:13px;gap:14px;}
+  .pd .specs .k{color:var(--faint);}
+  .pd .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .related{margin-top:80px;border-top:1px solid var(--line);padding-top:36px;}
+  .related h2{font-family:var(--serif);font-size:28px;margin-bottom:28px;}
+  .rgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(16px,2vw,24px);}
+  @media(min-width:720px){.rgrid{grid-template-columns:repeat(4,1fr);}}
+  .rgrid .media{position:relative;aspect-ratio:4/5;background:var(--panel);border-radius:12px;overflow:hidden;cursor:pointer;}
+  .rgrid .media .img{position:absolute;inset:0;background-size:cover;background-position:center;}
+  .rgrid .rt{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:12px;}
+  .rgrid .rt span:first-child{font-family:var(--serif);font-size:18px;}
+  .rgrid .rt span:last-child{font-size:13px;white-space:nowrap;}
+
+  /* ---------- generic page ---------- */
+  .page .eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;}
+  .page h1{font-family:var(--serif);font-size:clamp(34px,6.4vw,72px);line-height:1.02;letter-spacing:-.015em;}
+  .page .lead{color:var(--muted);line-height:1.75;margin-top:26px;max-width:760px;font-size:clamp(15px,2.2vw,17px);}
+  .cols2{display:grid;grid-template-columns:1fr;gap:clamp(28px,5vw,56px);align-items:center;margin-top:clamp(40px,6vw,72px);}
+  @media(min-width:860px){.cols2{grid-template-columns:1fr 1fr;}}
+  .cols2 .ph{aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:var(--panel);}
+  .cols2 .ph img{width:100%;height:100%;object-fit:cover;}
+  .cols2 h2{font-family:var(--serif);font-size:30px;margin-bottom:16px;}
+  .cols2 p{color:var(--muted);line-height:1.8;font-size:15px;}
+  .values{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:clamp(40px,6vw,72px);}
+  @media(min-width:680px){.values{grid-template-columns:repeat(3,1fr);}}
+  .values .v{background:var(--bg);padding:34px 28px;}
+  .values .v .n{font-family:var(--serif);font-size:44px;color:var(--accent);}
+  .values .v h3{font-size:16px;margin-top:10px;}
+  .values .v p{font-size:13.5px;line-height:1.7;color:var(--muted);margin-top:9px;}
+  .center{text-align:center;margin-top:clamp(48px,7vw,80px);}
+
+  /* ---------- delivery / contacts ---------- */
+  .twolist{display:grid;grid-template-columns:1fr;gap:clamp(32px,5vw,56px);margin-top:30px;}
+  @media(min-width:780px){.twolist{grid-template-columns:1fr 1fr;}}
+  .twolist h2{font-family:var(--serif);font-size:28px;margin-bottom:18px;}
+  .twolist .list{border-top:1px solid var(--line);}
+  .twolist .row{padding:18px 0;border-bottom:1px solid var(--line);}
+  .twolist .row .t{display:flex;justify-content:space-between;gap:16px;}
+  .twolist .row .t span:first-child{font-size:15px;}
+  .twolist .row .t span:last-child{font-size:13px;color:var(--muted);}
+  .twolist .row .t .free{color:var(--accent);}
+  .twolist .row p{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.6;}
+  .note{margin-top:26px;padding:20px 22px;border-radius:14px;background:var(--panel-soft);font-size:13px;line-height:1.7;color:var(--muted);}
+  .ccards{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:44px;}
+  @media(min-width:680px){.ccards{grid-template-columns:repeat(3,1fr);}}
+  .ccards .c{background:var(--bg);padding:32px 28px;}
+  .ccards .c .lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:11px;}
+  .ccards .c .big{font-family:var(--serif);font-size:23px;}
+  .ccards .c p{font-size:13px;color:var(--muted);margin-top:9px;}
+
+  /* ---------- cart ---------- */
+  .cart-row{display:grid;grid-template-columns:64px 1fr auto;gap:16px;align-items:center;padding:20px 0;border-bottom:1px solid var(--line);}
+  .cart-row .th{aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--panel);position:relative;}
+  .cart-row .th .img{position:absolute;inset:0;background-size:cover;background-position:center;}
+  .cart-row .nm{font-family:var(--serif);font-size:20px;}
+  .cart-row .mt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-top:4px;}
+  .cart-row .ctl{display:flex;align-items:center;gap:14px;margin-top:11px;flex-wrap:wrap;}
+  .qty{display:inline-flex;align-items:center;border:1px solid var(--line-strong);border-radius:999px;}
+  .qty span{width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--muted);}
+  .qty b{min-width:24px;text-align:center;font-size:13px;font-weight:400;}
+  .cart-row .rm{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);cursor:pointer;}
+  .cart-row .lt{text-align:right;font-size:15px;white-space:nowrap;}
+  .summary{width:100%;max-width:360px;margin-top:32px;}
+  @media(min-width:780px){.summary{margin-left:auto;}}
+  .summary .ln{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:8px 0;}
+  .summary .ln.bd{border-bottom:1px solid var(--line);}
+  .summary .tot{display:flex;justify-content:space-between;align-items:baseline;padding:16px 0;}
+  .summary .tot span{font-family:var(--serif);}
+  .summary .tot .a{font-size:24px;} .summary .tot .b{font-size:28px;}
+  .empty,.done{padding:72px 0;text-align:center;border-top:1px solid var(--line);}
+  .empty p,.done p{color:var(--muted);}
+  .done .tt{font-family:var(--serif);font-size:36px;}
+
+  /* ---------- form ---------- */
+  .form{display:grid;grid-template-columns:1fr;gap:18px;margin-top:clamp(36px,5vw,54px);}
+  @media(min-width:640px){.form{grid-template-columns:1fr 1fr;}}
+  .form label{display:flex;flex-direction:column;gap:9px;}
+  .form label.full{grid-column:1/-1;}
+  .form .fl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);}
+  .form input,.form textarea{background:#1c1d24;border:1px solid var(--line-strong);color:var(--ink);padding:14px 16px;font-size:14px;border-radius:8px;outline:none;width:100%;font-family:inherit;}
+  .form input:focus,.form textarea:focus{border-color:var(--accent);}
+  .form textarea{resize:vertical;line-height:1.6;}
+  .form .sub{grid-column:1/-1;display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:6px;}
+  .form .sub .hint{font-size:12px;color:var(--faint);}
+  .sent{margin-top:clamp(36px,5vw,54px);padding:56px 36px;border:1px solid var(--line);border-radius:18px;text-align:center;background:var(--panel-soft);}
+  .sent .tt{font-family:var(--serif);font-size:34px;}
+  .sent p{color:var(--muted);margin-top:14px;line-height:1.7;max-width:420px;margin-inline:auto;}
+
+  /* ---------- footer ---------- */
+  .ftr{border-top:1px solid var(--line);margin-top:50px;background:linear-gradient(180deg,transparent,#101116 90px);}
+  .ftr-in{display:grid;grid-template-columns:1fr;gap:30px;padding:40px var(--pad) 0;max-width:var(--maxw);margin:0 auto;}
+  @media(min-width:720px){.ftr-in{grid-template-columns:1.7fr 1fr 1fr;}}
+  .ftr .b{display:flex;align-items:center;gap:11px;margin-bottom:12px;}
+  .ftr .b svg{height:26px;} .ftr .b b{font-family:var(--serif);font-size:22px;letter-spacing:.06em;}
+  .ftr .desc{font-size:12px;line-height:1.7;color:var(--faint);max-width:300px;}
+  .ftr .col{display:flex;flex-direction:column;gap:9px;}
+  .ftr .col .h{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:2px;}
+  .ftr .col span{font-size:12.5px;color:var(--muted);}
+  .ftr .col span.lnk{cursor:pointer;}
+  .ftr .col span.lnk:hover{color:var(--ink);}
+  .ftr-bottom{max-width:var(--maxw);margin:26px auto 0;padding:14px var(--pad);border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--faint);}
+
+  /* ---------- responsive header ---------- */
+  @media(max-width:860px){
+    .nav{display:none;}
+    .lang{display:none;}
+    .burger{display:flex;}
+  }
+  @media(max-width:520px){
+    .pd .actions{flex-direction:column;align-items:stretch;}
+    .pd .actions .btn{width:100%;}
+  }
 </style>
 </head>
 <body>
@@ -32,613 +238,314 @@
 (function () {
   var W = window, D = document;
 
-  /* ============================ DATA (from the design project) ============================ */
+  /* ===================== DATA ===================== */
   var I18N = {
     "ru": {
-      "cart": "Корзина", "heroSub": "Изделия из дерева для кухни и интерьера", "heroCue": "Листайте — каталог",
-      "toCartTitle": "В корзину", "back": "← В каталог", "addToCart": "Добавить в корзину", "wantCustom": "Хочу на заказ", "more": "Ещё из каталога",
-      "cartTitle": "Корзина", "cartEmptyText": "Корзина пока пуста.", "toCatalog": "Перейти в каталог", "toCatalogShort": "В каталог",
-      "remove": "Удалить", "goods": "Товары", "delivery": "Доставка", "deliveryCalc": "рассчитывается при заказе", "total": "Итого", "checkout": "Оформить заказ",
-      "thanksTitle": "Спасибо за заказ!", "thanksText": "Мы свяжемся с вами в течение дня, чтобы подтвердить детали и рассчитать доставку.", "backCatalog": "Вернуться в каталог",
-      "aboutEyebrow": "О мастерской", "aboutTitle": "Дерево, которое помнит руки мастера", "aboutIntro": "Lima — небольшая столярная мастерская. С 2019 года мы делаем доски, посуду и предметы интерьера из массива бука — поштучно, без конвейера и спешки.",
-      "aboutSub2": "От доски до предмета", "aboutSub2Text": "Древесину сушим естественно, иногда годами. Затем — ручная распиловка, шлифовка в несколько проходов и пропитка пищевым маслом-воском. Никакого лака и пластика: дерево остаётся тёплым на ощупь и со временем становится только красивее.",
-      "aboutV1t": "Только массив", "aboutV1d": "Бук. Без шпона, ДСП и фанеры.", "aboutV2t": "Ручная работа", "aboutV2d": "Каждое изделие проходит через руки мастера и клеймится маркой Lima.", "aboutV3t": "Пищевая отделка", "aboutV3d": "Масло-воск, безопасный для контакта с едой.", "aboutCta": "Заказать изделие на заказ",
-      "customEyebrow": "Индивидуальный заказ", "customTitle": "Изделие по вашему эскизу", "customIntro": "От доски с гравировкой до мебели из массива. Опишите идею — предложим породу дерева, форму, отделку и рассчитаем стоимость.",
-      "customSentTitle": "Заявка отправлена", "customSentText": "Спасибо! Мастер свяжется с вами, чтобы обсудить детали будущего изделия.",
-      "fName": "Имя", "phName": "Как к вам обращаться", "fContact": "Телефон или почта", "phContact": "Для связи", "fType": "Тип изделия", "phType": "Доска, посуда, мебель, декор…", "fDesc": "Описание идеи", "phDesc": "Размеры, порода дерева, гравировка, пожелания…", "sendRequest": "Отправить заявку", "orWrite": "Или напишите напрямую: hello@lima-wood.ru",
-      "delEyebrow": "Доставка и оплата", "delTitle": "Как получить заказ", "free": "бесплатно",
-      "del1": "Самовывоз из мастерской", "del1d": "По предварительной договорённости, в удобное время.", "del2": "Курьер по городу", "del2p": "от 350 ₽", "del2d": "В день заказа или на следующий, бережная упаковка.", "del3": "Почта и СДЭК по России", "del3p": "по тарифу", "del3d": "Отправляем в защитной коробке, 3–10 дней в зависимости от региона.",
-      "payment": "Оплата", "pay1": "Банковской картой", "pay1d": "Онлайн или по ссылке после подтверждения заказа.", "pay2": "Переводом по реквизитам", "pay2d": "Для физлиц и компаний, по счёту.", "pay3": "Наличными при самовывозе", "pay3d": "В мастерской при получении.", "payNote": "Индивидуальные заказы — предоплата 50%, остаток при готовности изделия.",
-      "conEyebrow": "Контакты", "conTitle": "Напишите нам", "phone": "Телефон", "hours": "Пн–Сб, 10:00–19:00", "emailW": "Почта", "emailNote": "Отвечаем в течение дня", "social": "Соцсети", "socialNote": "Новые работы и процесс",
-      "conWsTitle": "Мастерская", "conWsText": "Самовывоз и встречи — по адресу мастерской, по предварительной договорённости. Напишите или позвоните, и мы согласуем удобное время.", "conWsCta": "Обсудить заказ",
-      "footerDesc": "Изделия из дерева для кухни и интерьера. Ручная работа, массив бука.", "footerSections": "Разделы", "footerContacts": "Контакты", "handmade": "Сделано вручную",
-      "nav": [ {"view":"home","s":"Каталог","l":"Каталог"}, {"view":"about","s":"Мастерская","l":"О мастерской"}, {"view":"custom","s":"Заказ","l":"Индивидуальный заказ"}, {"view":"delivery","s":"Доставка","l":"Доставка и оплата"}, {"view":"contacts","s":"Контакты","l":"Контакты"} ],
-      "catMap": { "Все":"Все","Доски":"Доски","Посуда":"Посуда","Подносы":"Подносы","Аксессуары":"Аксессуары","Декор":"Декор" }, "itemsWord": "изделий"
+      "cart":"Корзина","heroEyebrow":"Мастерская · ручная работа","heroSub":"Изделия из дерева для кухни и интерьера","heroLead":"Доски, посуда и предметы интерьера из массива бука — поштучно, без конвейера.",
+      "toCartTitle":"В корзину","back":"← В каталог","addToCart":"Добавить в корзину","wantCustom":"Хочу на заказ","more":"Ещё из каталога",
+      "cartTitle":"Корзина","cartEmptyText":"Корзина пока пуста.","toCatalog":"Перейти в каталог","toCatalogShort":"В каталог",
+      "remove":"Удалить","goods":"Товары","delivery":"Доставка","deliveryCalc":"рассчитывается при заказе","total":"Итого","checkout":"Оформить заказ",
+      "thanksTitle":"Спасибо за заказ!","thanksText":"Мы свяжемся с вами в течение дня, чтобы подтвердить детали и рассчитать доставку.","backCatalog":"Вернуться в каталог",
+      "aboutEyebrow":"О мастерской","aboutTitle":"Дерево, которое помнит руки мастера","aboutIntro":"Lima — небольшая столярная мастерская. С 2019 года мы делаем доски, посуду и предметы интерьера из массива бука — поштучно, без конвейера и спешки.",
+      "aboutSub2":"От доски до предмета","aboutSub2Text":"Древесину сушим естественно, иногда годами. Затем — ручная распиловка, шлифовка в несколько проходов и пропитка пищевым маслом-воском. Никакого лака и пластика: дерево остаётся тёплым на ощупь и со временем становится только красивее.",
+      "aboutV1t":"Только массив","aboutV1d":"Бук. Без шпона, ДСП и фанеры.","aboutV2t":"Ручная работа","aboutV2d":"Каждое изделие проходит через руки мастера и клеймится маркой Lima.","aboutV3t":"Пищевая отделка","aboutV3d":"Масло-воск, безопасный для контакта с едой.","aboutCta":"Заказать изделие на заказ",
+      "customEyebrow":"Индивидуальный заказ","customTitle":"Изделие по вашему эскизу","customIntro":"От доски с гравировкой до мебели из массива. Опишите идею — предложим породу дерева, форму, отделку и рассчитаем стоимость.",
+      "customSentTitle":"Заявка отправлена","customSentText":"Спасибо! Мастер свяжется с вами, чтобы обсудить детали будущего изделия.",
+      "fName":"Имя","phName":"Как к вам обращаться","fContact":"Телефон или почта","phContact":"Для связи","fType":"Тип изделия","phType":"Доска, посуда, мебель, декор…","fDesc":"Описание идеи","phDesc":"Размеры, порода дерева, гравировка, пожелания…","sendRequest":"Отправить заявку","orWrite":"Или напишите напрямую: hello@lima-wood.ru",
+      "delEyebrow":"Доставка и оплата","delTitle":"Как получить заказ","free":"бесплатно",
+      "del1":"Самовывоз из мастерской","del1d":"По предварительной договорённости, в удобное время.","del2":"Курьер по городу","del2p":"от 350 ₽","del2d":"В день заказа или на следующий, бережная упаковка.","del3":"Почта и СДЭК по России","del3p":"по тарифу","del3d":"Отправляем в защитной коробке, 3–10 дней в зависимости от региона.",
+      "payment":"Оплата","pay1":"Банковской картой","pay1d":"Онлайн или по ссылке после подтверждения заказа.","pay2":"Переводом по реквизитам","pay2d":"Для физлиц и компаний, по счёту.","pay3":"Наличными при самовывозе","pay3d":"В мастерской при получении.","payNote":"Индивидуальные заказы — предоплата 50%, остаток при готовности изделия.",
+      "conEyebrow":"Контакты","conTitle":"Напишите нам","phone":"Телефон","hours":"Пн–Сб, 10:00–19:00","emailW":"Почта","emailNote":"Отвечаем в течение дня","social":"Соцсети","socialNote":"Новые работы и процесс",
+      "conWsTitle":"Мастерская","conWsText":"Самовывоз и встречи — по адресу мастерской, по предварительной договорённости. Напишите или позвоните, и мы согласуем удобное время.","conWsCta":"Обсудить заказ",
+      "footerDesc":"Изделия из дерева для кухни и интерьера. Ручная работа, массив бука.","footerSections":"Разделы","footerContacts":"Контакты","handmade":"Сделано вручную",
+      "nav":[{"view":"home","s":"Каталог","l":"Каталог"},{"view":"about","s":"Мастерская","l":"О мастерской"},{"view":"custom","s":"Заказ","l":"Индивидуальный заказ"},{"view":"delivery","s":"Доставка","l":"Доставка и оплата"},{"view":"contacts","s":"Контакты","l":"Контакты"}],
+      "catMap":{"Все":"Все","Доски":"Доски","Посуда":"Посуда","Подносы":"Подносы","Аксессуары":"Аксессуары","Декор":"Декор"},"itemsWord":"изделий"
     },
     "en": {
-      "cart": "Cart", "heroSub": "Wooden goods for kitchen & interior", "heroCue": "Scroll — catalog",
-      "toCartTitle": "Add to cart", "back": "← Back to catalog", "addToCart": "Add to cart", "wantCustom": "Custom order", "more": "More from the catalog",
-      "cartTitle": "Cart", "cartEmptyText": "Your cart is empty.", "toCatalog": "Go to catalog", "toCatalogShort": "To catalog",
-      "remove": "Remove", "goods": "Items", "delivery": "Delivery", "deliveryCalc": "calculated at checkout", "total": "Total", "checkout": "Place order",
-      "thanksTitle": "Thank you for your order!", "thanksText": "We will contact you during the day to confirm the details and calculate delivery.", "backCatalog": "Back to catalog",
-      "aboutEyebrow": "About the workshop", "aboutTitle": "Wood that remembers the maker’s hands", "aboutIntro": "Lima is a small carpentry workshop. Since 2019 we have made boards, tableware and interior objects from solid beech — one by one, without a conveyor or haste.",
-      "aboutSub2": "From board to object", "aboutSub2Text": "We dry the wood naturally, sometimes for years. Then comes hand-sawing, multi-pass sanding and food-safe oil-wax. No lacquer or plastic: the wood stays warm to the touch and only grows more beautiful over time.",
-      "aboutV1t": "Solid wood only", "aboutV1d": "Beech. No veneer, MDF or plywood.", "aboutV2t": "Handmade", "aboutV2d": "Every piece passes through the maker’s hands and is branded with the Lima mark.", "aboutV3t": "Food-safe finish", "aboutV3d": "Oil-wax, safe for contact with food.", "aboutCta": "Order a custom piece",
-      "customEyebrow": "Custom order", "customTitle": "A piece by your design", "customIntro": "From an engraved board to solid-wood furniture. Describe your idea — we will suggest the wood, shape and finish, and quote a price.",
-      "customSentTitle": "Request sent", "customSentText": "Thank you! The maker will contact you to discuss the details of your future piece.",
-      "fName": "Name", "phName": "How to address you", "fContact": "Phone or email", "phContact": "To reach you", "fType": "Type of item", "phType": "Board, tableware, furniture, decor…", "fDesc": "Description of the idea", "phDesc": "Dimensions, wood species, engraving, wishes…", "sendRequest": "Send request", "orWrite": "Or write directly: hello@lima-wood.ru",
-      "delEyebrow": "Delivery & payment", "delTitle": "How to get your order", "free": "free",
-      "del1": "Pickup from the workshop", "del1d": "By appointment, at a convenient time.", "del2": "City courier", "del2p": "from 350 ₽", "del2d": "Same or next day, careful packaging.", "del3": "Post & CDEK across Russia", "del3p": "by rate", "del3d": "Shipped in a protective box, 3–10 days depending on the region.",
-      "payment": "Payment", "pay1": "By bank card", "pay1d": "Online or via a link after order confirmation.", "pay2": "Bank transfer", "pay2d": "For individuals and companies, by invoice.", "pay3": "Cash on pickup", "pay3d": "At the workshop upon receipt.", "payNote": "Custom orders — 50% prepayment, the rest when the piece is ready.",
-      "conEyebrow": "Contacts", "conTitle": "Write to us", "phone": "Phone", "hours": "Mon–Sat, 10:00–19:00", "emailW": "Email", "emailNote": "We reply within the day", "social": "Social", "socialNote": "New works & process",
-      "conWsTitle": "Workshop", "conWsText": "Pickup and meetings — at the workshop address, by appointment. Write or call and we will arrange a convenient time.", "conWsCta": "Discuss an order",
-      "footerDesc": "Wooden goods for kitchen and interior. Handmade, solid beech.", "footerSections": "Sections", "footerContacts": "Contacts", "handmade": "Handmade",
-      "nav": [ {"view":"home","s":"Catalog","l":"Catalog"}, {"view":"about","s":"Workshop","l":"About the workshop"}, {"view":"custom","s":"Custom","l":"Custom order"}, {"view":"delivery","s":"Delivery","l":"Delivery & payment"}, {"view":"contacts","s":"Contacts","l":"Contacts"} ],
-      "catMap": { "Все":"All","Доски":"Boards","Посуда":"Tableware","Подносы":"Trays","Аксессуары":"Accessories","Декор":"Decor" }, "itemsWord": "items"
+      "cart":"Cart","heroEyebrow":"Workshop · handmade","heroSub":"Wooden goods for kitchen & interior","heroLead":"Boards, tableware and interior objects from solid beech — one by one, no conveyor.",
+      "toCartTitle":"Add to cart","back":"← Back to catalog","addToCart":"Add to cart","wantCustom":"Custom order","more":"More from the catalog",
+      "cartTitle":"Cart","cartEmptyText":"Your cart is empty.","toCatalog":"Go to catalog","toCatalogShort":"To catalog",
+      "remove":"Remove","goods":"Items","delivery":"Delivery","deliveryCalc":"calculated at checkout","total":"Total","checkout":"Place order",
+      "thanksTitle":"Thank you for your order!","thanksText":"We will contact you during the day to confirm the details and calculate delivery.","backCatalog":"Back to catalog",
+      "aboutEyebrow":"About the workshop","aboutTitle":"Wood that remembers the maker’s hands","aboutIntro":"Lima is a small carpentry workshop. Since 2019 we have made boards, tableware and interior objects from solid beech — one by one, without a conveyor or haste.",
+      "aboutSub2":"From board to object","aboutSub2Text":"We dry the wood naturally, sometimes for years. Then comes hand-sawing, multi-pass sanding and food-safe oil-wax. No lacquer or plastic: the wood stays warm to the touch and only grows more beautiful over time.",
+      "aboutV1t":"Solid wood only","aboutV1d":"Beech. No veneer, MDF or plywood.","aboutV2t":"Handmade","aboutV2d":"Every piece passes through the maker’s hands and is branded with the Lima mark.","aboutV3t":"Food-safe finish","aboutV3d":"Oil-wax, safe for contact with food.","aboutCta":"Order a custom piece",
+      "customEyebrow":"Custom order","customTitle":"A piece by your design","customIntro":"From an engraved board to solid-wood furniture. Describe your idea — we will suggest the wood, shape and finish, and quote a price.",
+      "customSentTitle":"Request sent","customSentText":"Thank you! The maker will contact you to discuss the details of your future piece.",
+      "fName":"Name","phName":"How to address you","fContact":"Phone or email","phContact":"To reach you","fType":"Type of item","phType":"Board, tableware, furniture, decor…","fDesc":"Description of the idea","phDesc":"Dimensions, wood species, engraving, wishes…","sendRequest":"Send request","orWrite":"Or write directly: hello@lima-wood.ru",
+      "delEyebrow":"Delivery & payment","delTitle":"How to get your order","free":"free",
+      "del1":"Pickup from the workshop","del1d":"By appointment, at a convenient time.","del2":"City courier","del2p":"from 350 ₽","del2d":"Same or next day, careful packaging.","del3":"Post & CDEK across Russia","del3p":"by rate","del3d":"Shipped in a protective box, 3–10 days depending on the region.",
+      "payment":"Payment","pay1":"By bank card","pay1d":"Online or via a link after order confirmation.","pay2":"Bank transfer","pay2d":"For individuals and companies, by invoice.","pay3":"Cash on pickup","pay3d":"At the workshop upon receipt.","payNote":"Custom orders — 50% prepayment, the rest when the piece is ready.",
+      "conEyebrow":"Contacts","conTitle":"Write to us","phone":"Phone","hours":"Mon–Sat, 10:00–19:00","emailW":"Email","emailNote":"We reply within the day","social":"Social","socialNote":"New works & process",
+      "conWsTitle":"Workshop","conWsText":"Pickup and meetings — at the workshop address, by appointment. Write or call and we will arrange a convenient time.","conWsCta":"Discuss an order",
+      "footerDesc":"Wooden goods for kitchen and interior. Handmade, solid beech.","footerSections":"Sections","footerContacts":"Contacts","handmade":"Handmade",
+      "nav":[{"view":"home","s":"Catalog","l":"Catalog"},{"view":"about","s":"Workshop","l":"About the workshop"},{"view":"custom","s":"Custom","l":"Custom order"},{"view":"delivery","s":"Delivery","l":"Delivery & payment"},{"view":"contacts","s":"Contacts","l":"Contacts"}],
+      "catMap":{"Все":"All","Доски":"Boards","Посуда":"Tableware","Подносы":"Trays","Аксессуары":"Accessories","Декор":"Decor"},"itemsWord":"items"
     }
   };
 
   var PRODUCTS = [
     { id:0, price:4900, cat:"Доски", img:"catalog/boards/board-bread.png",
-      ru:{ name:"Доска «Торцевая»", material:"Бук · торцевой срез", desc:"Торцевой набор плашек бережёт лезвие ножа и почти не показывает следов реза. С каждым годом службы доска становится только красивее.", specs:[{k:"Материал",v:"Массив бука"},{k:"Размер",v:"35 × 25 × 4 см"},{k:"Отделка",v:"Масло-воск"}] },
-      en:{ name:"End-grain Board", material:"Beech · end grain", desc:"An end-grain block protects the knife edge and barely shows cut marks. The board only grows more beautiful with every year of use.", specs:[{k:"Material",v:"Solid beech"},{k:"Size",v:"35 × 25 × 4 cm"},{k:"Finish",v:"Oil-wax"}] } },
+      ru:{name:"Доска «Торцевая»",material:"Бук · торцевой срез",desc:"Торцевой набор плашек бережёт лезвие ножа и почти не показывает следов реза. С каждым годом службы доска становится только красивее.",specs:[{k:"Материал",v:"Массив бука"},{k:"Размер",v:"35 × 25 × 4 см"},{k:"Отделка",v:"Масло-воск"}]},
+      en:{name:"End-grain Board",material:"Beech · end grain",desc:"An end-grain block protects the knife edge and barely shows cut marks. The board only grows more beautiful with every year of use.",specs:[{k:"Material",v:"Solid beech"},{k:"Size",v:"35 × 25 × 4 cm"},{k:"Finish",v:"Oil-wax"}]} },
     { id:1, price:6500, cat:"Посуда", img:"catalog/tableware/sushi-white.png",
-      ru:{ name:"Набор «Дзен»", material:"Бук · масло-воск", desc:"Минималистичный сет для сервировки и подачи — доска, подставка и пиала, выточенные из одного бруска бука.", specs:[{k:"Материал",v:"Массив бука"},{k:"Состав",v:"3 предмета"},{k:"Отделка",v:"Масло-воск"}] },
-      en:{ name:"Zen Set", material:"Beech · oil-wax", desc:"A minimalist set for serving — board, stand and bowl, turned from a single beech billet.", specs:[{k:"Material",v:"Solid beech"},{k:"Set",v:"3 pieces"},{k:"Finish",v:"Oil-wax"}] } },
+      ru:{name:"Набор «Дзен»",material:"Бук · масло-воск",desc:"Минималистичный сет для сервировки и подачи — доска, подставка и пиала, выточенные из одного бруска бука.",specs:[{k:"Материал",v:"Массив бука"},{k:"Состав",v:"3 предмета"},{k:"Отделка",v:"Масло-воск"}]},
+      en:{name:"Zen Set",material:"Beech · oil-wax",desc:"A minimalist set for serving — board, stand and bowl, turned from a single beech billet.",specs:[{k:"Material",v:"Solid beech"},{k:"Set",v:"3 pieces"},{k:"Finish",v:"Oil-wax"}]} },
     { id:2, price:4200, cat:"Подносы", img:"catalog/trays/sushi-table.png",
-      ru:{ name:"Сервировка «Венге»", material:"Бук · обжиг", desc:"Сервировочный поднос с тёмной обожжённой поверхностью. Подойдёт для подачи и как акцент в интерьере.", specs:[{k:"Материал",v:"Массив бука"},{k:"Размер",v:"40 × 22 см"},{k:"Отделка",v:"Обжиг + масло"}] },
-      en:{ name:"Wenge Serving Set", material:"Beech · scorched", desc:"A serving tray with a dark scorched surface. Works for plating and as an interior accent.", specs:[{k:"Material",v:"Solid beech"},{k:"Size",v:"40 × 22 cm"},{k:"Finish",v:"Scorched + oil"}] } },
+      ru:{name:"Сервировка «Венге»",material:"Бук · обжиг",desc:"Сервировочный поднос с тёмной обожжённой поверхностью. Подойдёт для подачи и как акцент в интерьере.",specs:[{k:"Материал",v:"Массив бука"},{k:"Размер",v:"40 × 22 см"},{k:"Отделка",v:"Обжиг + масло"}]},
+      en:{name:"Wenge Serving Set",material:"Beech · scorched",desc:"A serving tray with a dark scorched surface. Works for plating and as an interior accent.",specs:[{k:"Material",v:"Solid beech"},{k:"Size",v:"40 × 22 cm"},{k:"Finish",v:"Scorched + oil"}]} },
     { id:3, price:2800, cat:"Аксессуары", img:"catalog/accessories/paper-holder.png",
-      ru:{ name:"Держатель полотенец", material:"Бук", desc:"Настольный держатель для бумажных полотенец из цельного бука. Устойчивое основание, спокойная форма.", specs:[{k:"Материал",v:"Массив бука"},{k:"Высота",v:"32 см"},{k:"Отделка",v:"Масло-воск"}] },
-      en:{ name:"Towel Holder", material:"Beech", desc:"A tabletop paper-towel holder from solid beech. A stable base and a calm form.", specs:[{k:"Material",v:"Solid beech"},{k:"Height",v:"32 cm"},{k:"Finish",v:"Oil-wax"}] } },
+      ru:{name:"Держатель полотенец",material:"Бук",desc:"Настольный держатель для бумажных полотенец из цельного бука. Устойчивое основание, спокойная форма.",specs:[{k:"Материал",v:"Массив бука"},{k:"Высота",v:"32 см"},{k:"Отделка",v:"Масло-воск"}]},
+      en:{name:"Towel Holder",material:"Beech",desc:"A tabletop paper-towel holder from solid beech. A stable base and a calm form.",specs:[{k:"Material",v:"Solid beech"},{k:"Height",v:"32 cm"},{k:"Finish",v:"Oil-wax"}]} },
     { id:4, price:5400, cat:"Посуда", img:"catalog/tableware/set-box.png",
-      ru:{ name:"Подарочный набор", material:"В фирменной коробке", desc:"Готовый подарок: набор кухонных предметов Lima в фирменной деревянной коробке с клеймом мастера.", specs:[{k:"Состав",v:"Набор предметов"},{k:"Упаковка",v:"Деревянная коробка"},{k:"Отделка",v:"Масло-воск"}] },
-      en:{ name:"Gift Set", material:"In a branded box", desc:"A ready gift: a set of Lima kitchen pieces in a branded wooden box with the maker’s mark.", specs:[{k:"Set",v:"Assorted pieces"},{k:"Packaging",v:"Wooden box"},{k:"Finish",v:"Oil-wax"}] } },
+      ru:{name:"Подарочный набор",material:"В фирменной коробке",desc:"Готовый подарок: набор кухонных предметов Lima в фирменной деревянной коробке с клеймом мастера.",specs:[{k:"Состав",v:"Набор предметов"},{k:"Упаковка",v:"Деревянная коробка"},{k:"Отделка",v:"Масло-воск"}]},
+      en:{name:"Gift Set",material:"In a branded box",desc:"A ready gift: a set of Lima kitchen pieces in a branded wooden box with the maker’s mark.",specs:[{k:"Set",v:"Assorted pieces"},{k:"Packaging",v:"Wooden box"},{k:"Finish",v:"Oil-wax"}]} },
     { id:5, price:1900, cat:"Аксессуары", img:"catalog/accessories/rolling-pin.png",
-      ru:{ name:"Скалка из бука", material:"Цельный массив", desc:"Классическая скалка, выточенная из цельного бруска бука. Приятная тяжесть и гладкая поверхность.", specs:[{k:"Материал",v:"Массив бука"},{k:"Длина",v:"45 см"},{k:"Отделка",v:"Масло-воск"}] },
-      en:{ name:"Beech Rolling Pin", material:"Solid wood", desc:"A classic rolling pin turned from a single beech billet. Pleasant weight and a smooth surface.", specs:[{k:"Material",v:"Solid beech"},{k:"Length",v:"45 cm"},{k:"Finish",v:"Oil-wax"}] } },
+      ru:{name:"Скалка из бука",material:"Цельный массив",desc:"Классическая скалка, выточенная из цельного бруска бука. Приятная тяжесть и гладкая поверхность.",specs:[{k:"Материал",v:"Массив бука"},{k:"Длина",v:"45 см"},{k:"Отделка",v:"Масло-воск"}]},
+      en:{name:"Beech Rolling Pin",material:"Solid wood",desc:"A classic rolling pin turned from a single beech billet. Pleasant weight and a smooth surface.",specs:[{k:"Material",v:"Solid beech"},{k:"Length",v:"45 cm"},{k:"Finish",v:"Oil-wax"}]} },
     { id:6, price:3200, cat:"Аксессуары", img:"catalog/accessories/handles-dark.png",
-      ru:{ name:"Рукояти «Венге»", material:"Бук · обжиг", desc:"Комплект обожжённых рукоятей из бука — для ножей или кухонного инструмента. Тёплый тёмный тон.", specs:[{k:"Материал",v:"Массив бука"},{k:"Обработка",v:"Обжиг"},{k:"Отделка",v:"Масло-воск"}] },
-      en:{ name:"Wenge Handles", material:"Beech · scorched", desc:"A set of scorched beech handles — for knives or kitchen tools. A warm dark tone.", specs:[{k:"Material",v:"Solid beech"},{k:"Treatment",v:"Scorched"},{k:"Finish",v:"Oil-wax"}] } },
+      ru:{name:"Рукояти «Венге»",material:"Бук · обжиг",desc:"Комплект обожжённых рукоятей из бука — для ножей или кухонного инструмента. Тёплый тёмный тон.",specs:[{k:"Материал",v:"Массив бука"},{k:"Обработка",v:"Обжиг"},{k:"Отделка",v:"Масло-воск"}]},
+      en:{name:"Wenge Handles",material:"Beech · scorched",desc:"A set of scorched beech handles — for knives or kitchen tools. A warm dark tone.",specs:[{k:"Material",v:"Solid beech"},{k:"Treatment",v:"Scorched"},{k:"Finish",v:"Oil-wax"}]} },
     { id:7, price:24000, cat:"Декор", img:"catalog/decor/chair.png",
-      ru:{ name:"Кресло «Lima»", material:"Массив бука", desc:"Гнутый каркас из массива бука на традиционных шиповых соединениях, без единого металлического крепежа. Предмет, который переживёт мебель вокруг.", specs:[{k:"Материал",v:"Массив бука"},{k:"Соединения",v:"Шиповые"},{k:"Отделка",v:"Масло-воск"}] },
-      en:{ name:"Lima Chair", material:"Solid beech", desc:"A bent beech frame on traditional mortise-and-tenon joints, without a single metal fastener. A piece that will outlast the furniture around it.", specs:[{k:"Material",v:"Solid beech"},{k:"Joints",v:"Mortise & tenon"},{k:"Finish",v:"Oil-wax"}] } }
+      ru:{name:"Кресло «Lima»",material:"Массив бука",desc:"Гнутый каркас из массива бука на традиционных шиповых соединениях, без единого металлического крепежа. Предмет, который переживёт мебель вокруг.",specs:[{k:"Материал",v:"Массив бука"},{k:"Соединения",v:"Шиповые"},{k:"Отделка",v:"Масло-воск"}]},
+      en:{name:"Lima Chair",material:"Solid beech",desc:"A bent beech frame on traditional mortise-and-tenon joints, without a single metal fastener. A piece that will outlast the furniture around it.",specs:[{k:"Material",v:"Solid beech"},{k:"Joints",v:"Mortise & tenon"},{k:"Finish",v:"Oil-wax"}]} }
   ];
 
-  // Inline SVG emblem (stands in for the project's logo PNG, which is delivered crisply at any size).
-  var EMBLEM = "data:image/svg+xml," + encodeURIComponent(
-    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 40'>" +
-    "<path d='M12 1C19 13 19 27 12 39C5 27 5 13 12 1Z' fill='%COL%'/>" +
-    "<path d='M12 6V34' stroke='%VEIN%' stroke-width='1.1' stroke-linecap='round'/></svg>"
-  );
-  function emblemUrl(ink, bg){ return EMBLEM.replace(encodeURIComponent("%COL%"), encodeURIComponent(ink)).replace(encodeURIComponent("%VEIN%"), encodeURIComponent(bg)); }
+  var CAT_KEYS = ["Все","Доски","Посуда","Подносы","Аксессуары","Декор"];
+  var EMBLEM = '<svg viewBox="0 0 24 40" aria-hidden="true"><path d="M12 1C19 13 19 27 12 39C5 27 5 13 12 1Z" fill="#ece5d8"/><path d="M12 6V34" stroke="#16171b" stroke-width="1.1" stroke-linecap="round"/></svg>';
+  var BAG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>';
 
-  /* ============================ small helpers ============================ */
-  function E(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
-  function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
+  /* ===================== helpers ===================== */
+  function E(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
+  function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g," "); }
+  function L(){ return I18N[state.lang]; }
 
-  /* ============================ state ============================ */
-  function loadCart(){ try { return JSON.parse(W.localStorage.getItem("lima_cart_v1")) || {}; } catch (e) { return {}; } }
-  function saveCart(c){ try { W.localStorage.setItem("lima_cart_v1", JSON.stringify(c)); } catch (e) {} }
-  function loadLang(){ try { return W.localStorage.getItem("lima_lang") || "ru"; } catch (e) { return "ru"; } }
+  /* ===================== state ===================== */
+  function loadCart(){ try{return JSON.parse(W.localStorage.getItem("lima_cart_v1"))||{};}catch(e){return {};} }
+  function saveCart(c){ try{W.localStorage.setItem("lima_cart_v1",JSON.stringify(c));}catch(e){} }
+  function loadLang(){ try{return W.localStorage.getItem("lima_lang")||"ru";}catch(e){return "ru";} }
 
-  // fixed design props (the DC editor enums; defaults reproduced)
-  var props = { theme: "Ателье (тёмная)", accent: "Медовый дуб", density: "Плотный" };
-
-  var state = {
-    view: "home", cat: "Все", activeId: 0, cart: loadCart(),
-    fading: false, menuOpen: false, customSent: false, cartDone: false,
-    lang: loadLang(), vw: W.innerWidth
-  };
-
-  var _scroll = {}, _m = null, _t = null;
+  var state = { view:"home", cat:"Все", activeId:0, cart:loadCart(), menuOpen:false, customSent:false, cartDone:false, lang:loadLang() };
+  var _scroll = {};
   var app = D.getElementById("app");
 
   function setState(patch, cb){
-    var p = typeof patch === "function" ? patch(state) : patch;
     var prevCart = state.cart;
-    for (var k in p) state[k] = p[k];
+    for (var k in patch) state[k] = patch[k];
     if (prevCart !== state.cart) saveCart(state.cart);
     render();
     if (cb) cb();
-    applyScroll();
   }
 
-  /* ============================ navigation / actions ============================ */
-  function go(view){ _scroll[state.view] = W.scrollY || 0; var t = _scroll[view] || 0; setState({ view: view, menuOpen: false, customSent: false, cartDone: false }, function(){ W.scrollTo(0, t); }); }
-  function goTop(){ _scroll["home"] = 0; setState({ view: "home", menuOpen: false, customSent: false, cartDone: false }, function(){ W.scrollTo(0, 0); }); }
-  function openProduct(id){ _scroll[state.view] = W.scrollY || 0; setState({ view: "product", activeId: id, menuOpen: false }, function(){ W.scrollTo(0, 0); }); }
-  function addToCart(id){ var c = Object.assign({}, state.cart); c[id] = (c[id] || 0) + 1; setState({ cart: c }); }
-  function changeQty(id, d){ var c = Object.assign({}, state.cart); c[id] = (c[id] || 0) + d; if (c[id] <= 0) delete c[id]; setState({ cart: c }); }
-  function removeFromCart(id){ var c = Object.assign({}, state.cart); delete c[id]; setState({ cart: c }); }
-  function setLang(lang){ try { W.localStorage.setItem("lima_lang", lang); } catch (e) {} setState({ lang: lang, menuOpen: false }); }
-  function toggleMenu(){ setState({ menuOpen: !state.menuOpen }); }
-  function setCategory(name){ if (name === state.cat) return; if (_t) clearTimeout(_t); setState({ fading: true }); _t = setTimeout(function(){ setState({ cat: name, fading: false }); }, 200); }
-  function checkout(){ setState({ cart: {}, cartDone: true }); }
-  function sendCustom(){ setState({ customSent: true }, function(){ W.scrollTo(0, 0); }); }
+  /* ===================== actions ===================== */
+  function go(view){ _scroll[state.view]=W.scrollY||0; var t=_scroll[view]||0; setState({view:view,menuOpen:false,customSent:false,cartDone:false}, function(){W.scrollTo(0,t);}); }
+  function openProduct(id){ _scroll[state.view]=W.scrollY||0; setState({view:"product",activeId:id,menuOpen:false}, function(){W.scrollTo(0,0);}); }
+  function addToCart(id){ var c=Object.assign({},state.cart); c[id]=(c[id]||0)+1; setState({cart:c}); }
+  function changeQty(id,d){ var c=Object.assign({},state.cart); c[id]=(c[id]||0)+d; if(c[id]<=0) delete c[id]; setState({cart:c}); }
+  function removeFromCart(id){ var c=Object.assign({},state.cart); delete c[id]; setState({cart:c}); }
+  function setLang(l){ try{W.localStorage.setItem("lima_lang",l);}catch(e){} setState({lang:l,menuOpen:false}); }
+  function toggleMenu(){ setState({menuOpen:!state.menuOpen}); }
+  function setCategory(name){ if(name!==state.cat) setState({cat:name}); }
+  function checkout(){ setState({cart:{},cartDone:true}); }
+  function sendCustom(){ setState({customSent:true}, function(){W.scrollTo(0,0);}); }
+  function scrollCatalog(){ var el=D.getElementById("catalog"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); }
 
-  /* ============================ theme tokens (verbatim port) ============================ */
-  function tokens(){
-    var theme = props.theme || "Ателье (тёмная)";
-    var dark = theme !== "Бумага (светлая)";
-    var accentName = props.accent || "Медовый дуб";
-    var accents = {
-      "Медовый дуб": { a: "#c8a06a", ai: "#16171b" },
-      "Лесной мох":  { a: "#9bae8f", ai: "#15211a" },
-      "Терракота":   { a: "#c07a55", ai: "#241009" }
-    };
-    var ac = accents[accentName] || accents["Медовый дуб"];
-    var t = dark ? {
-      bgSolid:"#16171b", bgGrad:"linear-gradient(180deg,#1a1b21 0%,#16171b 60%,#131419 100%)",
-      panel:"#1f2027", panelSoft:"#191a20", ink:"#ece5d8", muted:"#a8a08f", faint:"#6f685d",
-      line:"rgba(236,229,216,.13)", lineStrong:"rgba(236,229,216,.28)", header:"rgba(22,23,27,.82)",
-      header2:"rgba(236,229,216,.03)", scrim:"rgba(22,23,27,.9)", menu:"rgba(20,21,26,.96)", inputBg:"#1c1d24",
-      fadeEdge:"#191a21", footerBg:"#101116"
-    } : {
-      bgSolid:"#f3efe6", bgGrad:"linear-gradient(180deg,#f7f3ea 0%,#f3efe6 60%,#eee8dc 100%)",
-      panel:"#e7e1d3", panelSoft:"#efe9dd", ink:"#1c1b18", muted:"#5c554a", faint:"#928873",
-      line:"rgba(28,27,24,.14)", lineStrong:"rgba(28,27,24,.32)", header:"rgba(243,239,230,.86)",
-      header2:"rgba(28,27,24,.025)", scrim:"rgba(243,239,230,.84)", menu:"rgba(247,243,234,.97)", inputBg:"#fbf8f1",
-      fadeEdge:"#f6f2e9", footerBg:"#ece5d6"
-    };
-    var density = props.density || "Плотный";
-    var dense = density !== "Просторный";
-    return { dark: dark, ac: ac, t: t, dense: dense };
-  }
+  /* ===================== derived ===================== */
+  function cartIds(){ return Object.keys(state.cart).filter(function(k){return state.cart[k]>0 && PRODUCTS[k];}); }
+  function cartCount(){ return cartIds().reduce(function(a,k){return a+state.cart[k];},0); }
 
-  /* ============================ derived values (verbatim port of renderVals) ============================ */
-  function vals(){
-    var tk = tokens(), t = tk.t, ac = tk.ac, dense = tk.dense, dark = tk.dark;
-    var view = state.view, lang = state.lang || "ru", L = I18N[lang];
-    var vw = state.vw || W.innerWidth || 1200;
-    var small = vw < 600, mid = vw < 980;
-    var pad = small ? "20px" : mid ? "30px" : "48px";
-    var headerH = view === "home" ? (small ? "80px" : "76px") : (small ? "42px" : "46px");
-    var langDisplay = small ? "none" : "inline-flex";
-    var rightGap = small ? "14px" : "22px";
-    var navDisplay = vw < 900 ? "none" : "flex";
-    var burgerDisplay = vw < 900 ? "flex" : "none";
-    var countDisplay = small ? "none" : "inline";
-    var baseCols = dense ? 4 : 3;
-    var nCols = small ? 2 : mid ? Math.min(baseCols, 3) : baseCols;
-    var rgap = small ? "30px 16px" : mid ? "40px 26px" : (dense ? "48px 30px" : "60px 44px");
-    var ratio = dense ? "4/5" : "3/4";
-    var detailCols = mid ? "1fr" : "1.1fr 1fr";
-    var aboutCols = mid ? "1fr" : "1fr 1fr";
-    var formCols = small ? "1fr" : "1fr 1fr";
-    var relatedCols = small ? "repeat(2,1fr)" : "repeat(4,1fr)";
-    var valsCols = small ? "1fr" : "repeat(3,1fr)";
-    var contactsCols = mid ? "1fr" : "repeat(3,1fr)";
-    var footerCols = small ? "1fr" : mid ? "1fr 1fr" : "1.6fr 1fr 1fr";
-
-    var rootStyle = [
-      "--ink:" + t.ink, "--muted:" + t.muted, "--faint:" + t.faint, "--line:" + t.line, "--line-strong:" + t.lineStrong,
-      "--panel:" + t.panel, "--panel-soft:" + t.panelSoft, "--header-bg:" + t.header, "--header-row2:" + t.header2,
-      "--menu-bg:" + t.menu, "--hero-scrim:" + t.scrim, "--hero-img:url(assets/handles-dark.png)",
-      "--accent:" + ac.a, "--accent-ink:" + ac.ai, "--card-ratio:" + ratio, "--bg-solid:" + t.bgSolid,
-      "--pad:" + pad, "--headerH:" + headerH, "--nav-display:" + navDisplay, "--burger-display:" + burgerDisplay,
-      "--count-display:" + countDisplay, "--detail-cols:" + detailCols, "--about-cols:" + aboutCols,
-      "--form-cols:" + formCols, "--related-cols:" + relatedCols, "--vals-cols:" + valsCols,
-      "--contacts-cols:" + contactsCols, "--footer-cols:" + footerCols, "--detail-gap:" + (mid ? "40px" : "56px"),
-      "--fade-edge:" + t.fadeEdge, "--footer-bg:" + t.footerBg,
-      "--lang-display:" + langDisplay, "--right-gap:" + rightGap,
-      "--fade-shadow:" + (dark ? "rgba(0,0,0,.55)" : "rgba(40,36,28,.22)"),
-      "--logo-emblem:url(\"" + emblemUrl(t.ink, t.bgSolid) + "\")",
-      "position:relative", "background-color:" + t.bgSolid, "background-image:" + t.bgGrad, "color:" + t.ink,
-      "font-family:'Manrope',sans-serif", "-webkit-font-smoothing:antialiased", "min-height:100vh",
-      "transition:background-color .5s ease,color .5s ease"
-    ].join(";");
-
-    var navItems = (L.nav || []).map(function(n){
-      var active = n.view === view;
-      return { label:n.s, longLabel:n.l, view:n.view,
-        deskStyle:"cursor:pointer;padding-bottom:3px;border-bottom:1px solid " + (active ? "var(--accent)" : "transparent") + ";color:" + (active ? "var(--ink)" : "var(--muted)") + ";",
-        menuStyle:"font-family:'Cormorant',serif;font-size:34px;cursor:pointer;padding:8px 0;color:" + (active ? "var(--accent)" : "var(--ink)") + ";" };
-    });
-
-    var langOn = "cursor:pointer;font-weight:600;color:var(--ink);";
-    var langOff = "cursor:pointer;font-weight:400;color:var(--muted);";
-    var ruStyle = lang === "ru" ? langOn : langOff;
-    var enStyle = lang === "en" ? langOn : langOff;
-
-    var catKeys = ["Все", "Доски", "Посуда", "Подносы", "Аксессуары", "Декор"];
-    var fb = "cursor:pointer;font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding-bottom:5px;white-space:nowrap;flex:none;transition:all .25s;";
-    var cats = catKeys.map(function(key){
-      return { name:L.catMap[key] || key, key:key,
-        style: fb + (key === state.cat ? "color:var(--ink);border-bottom:1px solid var(--accent);" : "color:var(--faint);border-bottom:1px solid transparent;") };
-    });
-
-    var all = PRODUCTS;
-    var list = state.cat === "Все" ? all : all.filter(function(p){ return p.cat === state.cat; });
-    var products = list.map(function(p){
-      var id = all.indexOf(p), d = p[lang];
-      return { id:id, name:d.name, priceFmt:fmt(p.price), material:d.material, bgUrl:"url(" + p.img + ")" };
-    });
-    var gridStyle = "display:grid;grid-template-columns:repeat(" + nCols + ",1fr);gap:" + rgap + ";opacity:" + (state.fading ? 0 : 1) + ";transition:opacity .2s ease;";
-
-    var EMPTY = { price:0, cat:"", img:"", ru:{name:"",material:"",desc:"",specs:[]}, en:{name:"",material:"",desc:"",specs:[]} };
-    var ap = all[state.activeId] || all[0] || EMPTY, apd = ap[lang];
-    var product = { id:state.activeId, name:apd.name, priceFmt:fmt(ap.price), desc:apd.desc, material:apd.material,
-      catLabel:L.catMap[ap.cat] || ap.cat, bg:"url(" + ap.img + ")", specs:apd.specs };
-    var related = all.filter(function(p, i){ return i !== state.activeId; }).slice(0, 4).map(function(p){
-      var id = all.indexOf(p), d = p[lang];
-      return { id:id, name:d.name, priceFmt:fmt(p.price), bg:"url(" + p.img + ")" };
-    });
-
-    var cart = state.cart;
-    var ids = Object.keys(cart).filter(function(k){ return cart[k] > 0 && all[k]; });
-    var cartCount = ids.reduce(function(a, k){ return a + cart[k]; }, 0);
-    var cartTotal = ids.reduce(function(a, k){ return a + all[k].price * cart[k]; }, 0);
-    var cartItems = ids.map(function(k){
-      var p = all[k], id = parseInt(k, 10), d = p[lang];
-      return { id:id, name:d.name, material:d.material, qty:cart[k], bg:"url(" + p.img + ")", lineFmt:fmt(p.price * cart[k]) };
-    });
-
-    var inputStyle = "background:" + t.inputBg + ";border:1px solid var(--line-strong);color:var(--ink);padding:14px 16px;font-size:14px;border-radius:8px;outline:none;width:100%;";
-    var textareaStyle = inputStyle + "resize:vertical;line-height:1.6;";
-
-    return {
-      rootStyle:rootStyle, navItems:navItems, L:L, lang:lang,
-      itemsLabel:list.length + " " + L.itemsWord, ruStyle:ruStyle, enStyle:enStyle,
-      isHome:view==="home", isProduct:view==="product", isCart:view==="cart",
-      isAbout:view==="about", isCustom:view==="custom", isDelivery:view==="delivery", isContacts:view==="contacts",
-      menuOpen:state.menuOpen,
-      cats:cats, products:products, gridStyle:gridStyle,
-      product:product, related:related,
-      cartCount:cartCount, cartItems:cartItems, cartTotalFmt:fmt(cartTotal),
-      cartEmpty:cartItems.length === 0 && !state.cartDone,
-      cartHasItems:cartItems.length > 0 && !state.cartDone,
-      cartDone:state.cartDone,
-      customForm:!state.customSent, customSent:state.customSent,
-      inputStyle:inputStyle, textareaStyle:textareaStyle
-    };
-  }
-
-  /* ============================ view markup ============================ */
-  function productCard(p){
-    return '<div class="lima-card" data-act="open" data-id="' + p.id + '" style="cursor:pointer;">' +
-      '<div style="position:relative;aspect-ratio:var(--card-ratio,4/5);background:var(--panel,#1f2027);overflow:hidden;border-radius:14px;">' +
-        '<div role="img" aria-label="' + E(p.name) + '" style="position:absolute;inset:0;background:' + p.bgUrl + ' center/cover no-repeat;transform:scale(calc(1 + var(--lift,0)*0.045));transition:transform 1.1s cubic-bezier(.2,.7,.3,1);"></div>' +
-        '<span class="lima-add" data-act="add" data-id="' + p.id + '" title="' + E(VL.L.toCartTitle) + '" style="position:absolute;bottom:13px;right:13px;width:40px;height:40px;border-radius:50%;background:var(--accent,#c8a06a);color:var(--accent-ink,#16171b);display:flex;align-items:center;justify-content:center;font-size:21px;line-height:1;box-shadow:0 4px 16px rgba(0,0,0,.28);transition:transform .25s;">+</span>' +
-      '</div>' +
-      '<div style="font-family:\'Cormorant\',serif;font-size:21px;line-height:1.18;color:var(--ink,#ece5d8);margin-top:14px;text-wrap:pretty;">' + E(p.name) + '</div>' +
-      '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:7px;">' +
-        '<span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint,#6f685d);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + E(p.material) + '</span>' +
-        '<span style="font-size:14px;color:var(--ink,#ece5d8);white-space:nowrap;flex:none;">' + E(p.priceFmt) + ' ₽</span>' +
-      '</div></div>';
-  }
-
-  var VL; // current vals (used by helpers during render)
-
-  function header(v){
-    var navDesk = v.navItems.map(function(n){ return '<span data-act="go" data-view="' + n.view + '" style="' + n.deskStyle + '">' + E(n.label) + '</span>'; }).join("");
-    var catRow = !v.isHome ? "" :
-      '<div style="border-top:1px solid var(--line);background:var(--header-row2);flex:1;">' +
-        '<div style="max-width:1440px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:12px var(--pad,48px);">' +
-          '<div class="lima-noscroll" style="display:flex;gap:24px;align-items:center;flex-wrap:nowrap;overflow-x:auto;max-width:100%;">' +
-            v.cats.map(function(c){ return '<span data-act="cat" data-cat="' + E(c.key) + '" style="' + c.style + '">' + E(c.name) + '</span>'; }).join("") +
-          '</div>' +
-          '<span style="display:var(--count-display,inline);font-size:11px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;">' + E(v.itemsLabel) + '</span>' +
-        '</div></div>';
-    return '<header id="limaHeader" style="position:sticky;top:0;z-index:50;height:var(--headerH,113px);overflow:visible;">' +
-      '<div id="limaCompact" style="position:absolute;inset:0;opacity:1;pointer-events:auto;display:flex;flex-direction:column;background:var(--header-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);">' +
-        '<div style="max-width:1440px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:6px var(--pad,48px);">' +
-          '<div id="limaLogoSlot" style="display:flex;align-items:center;gap:9px;visibility:hidden;">' +
-            '<div style="height:20px;width:14px;flex:none;"></div>' +
-            '<span style="font-family:\'Cormorant\',serif;font-weight:500;font-size:22px;letter-spacing:.07em;">LIMA</span>' +
-          '</div>' +
-          '<div style="display:var(--nav-display,flex);gap:30px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;">' + navDesk + '</div>' +
-          '<div style="display:flex;gap:var(--right-gap,22px);align-items:center;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);">' +
-            '<span style="display:var(--lang-display,inline-flex);align-items:center;gap:6px;">' +
-              '<span data-act="lang" data-lang="ru" style="' + v.ruStyle + '">RU</span>' +
-              '<span style="color:var(--faint);">/</span>' +
-              '<span data-act="lang" data-lang="en" style="' + v.enStyle + '">EN</span>' +
-            '</span>' +
-            '<span data-act="go" data-view="cart" style="cursor:pointer;color:var(--ink);display:flex;align-items:center;gap:7px;">' + E(v.L.cart) + '<span style="color:var(--accent);">(' + v.cartCount + ')</span></span>' +
-            '<span data-act="toggleMenu" style="display:var(--burger-display,none);cursor:pointer;flex-direction:column;gap:4px;width:22px;">' +
-              '<span style="height:1.5px;background:var(--ink);display:block;"></span>' +
-              '<span style="height:1.5px;background:var(--ink);display:block;"></span>' +
-              '<span style="height:1.5px;background:var(--ink);display:block;"></span>' +
-            '</span>' +
-          '</div>' +
-        '</div>' + catRow +
-        '<div style="position:absolute;left:0;right:0;top:100%;height:44px;background:linear-gradient(180deg,var(--fade-shadow) 0%,transparent 100%);pointer-events:none;"></div>' +
-      '</div></header>';
-  }
-
-  function logo(){
-    return '<div id="limaLogo" data-act="goTop" style="position:fixed;top:0;left:0;z-index:60;display:flex;align-items:center;gap:0.2em;cursor:pointer;font-size:clamp(56px,8vw,112px);transform-origin:0 0;will-change:transform;">' +
-      '<div role="img" aria-label="Lima" style="height:0.92em;width:0.6em;background:var(--logo-emblem) center/contain no-repeat;flex:none;"></div>' +
-      '<span style="font-family:\'Cormorant\',serif;font-weight:500;font-size:1em;line-height:.9;letter-spacing:.06em;color:var(--ink);">LIMA</span>' +
+  /* ===================== components ===================== */
+  function card(p, lang){
+    var d = p[lang];
+    return '<div class="card" data-act="open" data-id="'+p.id+'">'+
+      '<div class="media"><div class="img" style="background-image:url('+p.img+')"></div>'+
+        '<span class="add" data-act="add" data-id="'+p.id+'" title="'+E(L().toCartTitle)+'">+</span></div>'+
+      '<h3>'+E(d.name)+'</h3>'+
+      '<div class="meta"><span class="m">'+E(d.material)+'</span><span class="p">'+fmt(p.price)+' ₽</span></div>'+
     '</div>';
   }
 
-  function menu(v){
-    if (!v.menuOpen) return "";
-    var items = v.navItems.map(function(n){ return '<span data-act="go" data-view="' + n.view + '" style="' + n.menuStyle + '">' + E(n.longLabel) + '</span>'; }).join("");
-    return '<div style="position:fixed;inset:0;z-index:90;background:var(--menu-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;flex-direction:column;padding:26px var(--pad,24px);">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;">' +
-        '<span style="font-family:\'Cormorant\',serif;font-weight:500;font-size:26px;letter-spacing:.07em;color:var(--ink);">LIMA</span>' +
-        '<span data-act="toggleMenu" style="cursor:pointer;font-size:30px;line-height:1;color:var(--ink);">×</span>' +
-      '</div>' +
-      '<div style="display:flex;flex-direction:column;gap:6px;margin-top:48px;">' + items + '</div>' +
-      '<div style="display:flex;gap:14px;margin-top:30px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;">' +
-        '<span data-act="lang" data-lang="ru" style="' + v.ruStyle + '">RU</span><span style="color:var(--faint);">/</span><span data-act="lang" data-lang="en" style="' + v.enStyle + '">EN</span>' +
-      '</div>' +
-      '<div style="margin-top:auto;font-size:12px;color:var(--faint);line-height:2;letter-spacing:.03em;">+7 900 000-00-00<br>hello@lima-wood.ru · @lima.wood</div>' +
+  function header(l){
+    var t=L();
+    var nav = t.nav.map(function(n){ return '<span class="'+(n.view===state.view?"on":"")+'" data-act="go" data-view="'+n.view+'">'+E(n.s)+'</span>'; }).join("");
+    return '<header class="hdr"><div class="hdr-in">'+
+      '<span class="brand" data-act="goTop">'+EMBLEM+'<b>LIMA</b></span>'+
+      '<nav class="nav">'+nav+'</nav>'+
+      '<div class="actions">'+
+        '<span class="lang"><span class="'+(l==="ru"?"on":"")+'" data-act="lang" data-lang="ru">RU</span><i>/</i><span class="'+(l==="en"?"on":"")+'" data-act="lang" data-lang="en">EN</span></span>'+
+        '<span class="cart-link" data-act="go" data-view="cart">'+BAG+'<b>'+cartCount()+'</b></span>'+
+        '<span class="burger" data-act="toggleMenu"><i></i><i></i><i></i></span>'+
+      '</div>'+
+    '</div></header>';
+  }
+
+  function menu(l){
+    if(!state.menuOpen) return "";
+    var t=L();
+    var nav = t.nav.map(function(n){ return '<span class="'+(n.view===state.view?"on":"")+'" data-act="go" data-view="'+n.view+'">'+E(n.l)+'</span>'; }).join("");
+    return '<div class="menu"><div class="menu-top"><b>LIMA</b><span class="menu-close" data-act="toggleMenu">×</span></div>'+
+      '<nav>'+nav+'</nav>'+
+      '<div class="m-lang"><span class="'+(l==="ru"?"on":"")+'" data-act="lang" data-lang="ru" style="cursor:pointer;color:'+(l==="ru"?"var(--accent)":"var(--muted)")+'">RU</span><span style="color:var(--faint)">/</span><span class="'+(l==="en"?"on":"")+'" data-act="lang" data-lang="en" style="cursor:pointer;color:'+(l==="en"?"var(--accent)":"var(--muted)")+'">EN</span></div>'+
+      '<div class="m-foot">+7 900 000-00-00<br>hello@lima-wood.ru · @lima.wood</div>'+
     '</div>';
   }
 
-  function hero(v){
-    if (!v.isHome) return "";
-    return '<div id="limaHero" style="position:absolute;top:0;left:0;right:0;height:56vh;z-index:40;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;overflow:hidden;">' +
-      '<div style="position:absolute;inset:0;background:var(--hero-img) center/cover no-repeat;opacity:.2;"></div>' +
-      '<div style="position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 44%,transparent 0%,var(--hero-scrim) 100%);"></div>' +
-      '<div style="position:absolute;left:0;right:0;bottom:0;height:70%;background:linear-gradient(180deg,transparent 0%,var(--bg-solid) 72%,var(--bg-solid) 100%);"></div>' +
-      '<div id="limaHeroContent" style="position:absolute;left:0;right:0;bottom:13%;display:flex;flex-direction:column;align-items:center;text-align:center;">' +
-        '<div id="limaHeroTag" style="font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);">' + E(v.L.heroSub) + '</div>' +
-        '<div id="limaHeroCue" style="display:flex;align-items:center;gap:9px;margin-top:30px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--faint);">' +
-          '<span>' + E(v.L.heroCue) + '</span>' +
-          '<span style="display:inline-flex;animation:limaHint 1.9s ease-in-out infinite;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.6"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span>' +
-        '</div>' +
-      '</div></div>';
+  function homeView(lang){
+    var t=L();
+    var list = state.cat==="Все" ? PRODUCTS : PRODUCTS.filter(function(p){return p.cat===state.cat;});
+    var chips = CAT_KEYS.map(function(k){ return '<span class="chip '+(k===state.cat?"on":"")+'" data-act="cat" data-cat="'+E(k)+'">'+E(t.catMap[k]||k)+'</span>'; }).join("");
+    return '<section class="hero">'+
+        '<div class="eyebrow">'+E(t.heroEyebrow)+'</div>'+
+        '<h1>'+E(t.heroSub)+'</h1>'+
+        '<p>'+E(t.heroLead)+'</p>'+
+        '<div class="cta"><span class="btn accent" data-act="scrollCatalog">'+E(t.toCatalog)+'</span></div>'+
+      '</section>'+
+      '<div class="catbar"><div class="in">'+chips+'<span class="count">'+list.length+' '+E(t.itemsWord)+'</span></div></div>'+
+      '<div class="wrap section" id="catalog"><div class="grid">'+list.map(function(p){return card(p,lang);}).join("")+'</div></div>';
   }
 
-  function homeScreen(v){
-    if (!v.isHome) return "";
-    return '<section style="max-width:1440px;margin:calc(56vh - var(--headerH,113px)) auto 0;padding:40px var(--pad,48px) 100px;">' +
-      '<div style="' + v.gridStyle + '">' + v.products.map(productCard).join("") + '</div></section>';
-  }
-
-  function productScreen(v){
-    if (!v.isProduct) return "";
-    var p = v.product;
-    var specs = p.specs.map(function(s){ return '<div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--faint);letter-spacing:.04em;">' + E(s.k) + '</span><span style="color:var(--ink);">' + E(s.v) + '</span></div>'; }).join("");
-    var related = v.related.map(function(p){
-      return '<div data-act="open" data-id="' + p.id + '" style="cursor:pointer;">' +
-        '<div style="position:relative;aspect-ratio:4/5;background:var(--panel);border-radius:12px;overflow:hidden;"><div role="img" aria-label="' + E(p.name) + '" style="position:absolute;inset:0;background:' + p.bg + ' center/cover no-repeat;"></div></div>' +
-        '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:13px;gap:10px;"><span style="font-family:\'Cormorant\',serif;font-size:18px;color:var(--ink);">' + E(p.name) + '</span><span style="font-size:13px;color:var(--ink);white-space:nowrap;">' + E(p.priceFmt) + ' ₽</span></div></div>';
+  function productView(lang){
+    var t=L(), p=PRODUCTS[state.activeId]||PRODUCTS[0], d=p[lang];
+    var specs = d.specs.map(function(s){return '<div><span class="k">'+E(s.k)+'</span><span>'+E(s.v)+'</span></div>';}).join("");
+    var related = PRODUCTS.filter(function(x,i){return i!==state.activeId;}).slice(0,4).map(function(x){
+      var dx=x[lang];
+      return '<div data-act="open" data-id="'+x.id+'"><div class="media"><div class="img" style="background-image:url('+x.img+')"></div></div>'+
+        '<div class="rt"><span>'+E(dx.name)+'</span><span>'+fmt(x.price)+' ₽</span></div></div>';
     }).join("");
-    return '<section style="max-width:1440px;margin:0 auto;padding:36px var(--pad,48px) 100px;">' +
-      '<span data-act="go" data-view="home" style="display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:34px;">' + E(v.L.back) + '</span>' +
-      '<div style="display:grid;grid-template-columns:var(--detail-cols,1.1fr 1fr);gap:var(--detail-gap,64px);align-items:start;">' +
-        '<div style="position:relative;aspect-ratio:4/5;background:var(--panel);border-radius:18px;overflow:hidden;"><div role="img" aria-label="' + E(p.name) + '" style="position:absolute;inset:0;background:' + p.bg + ' center/cover no-repeat;"></div></div>' +
-        '<div style="padding-top:6px;">' +
-          '<div style="font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;">' + E(p.catLabel) + '</div>' +
-          '<h1 style="font-family:\'Cormorant\',serif;font-weight:400;font-size:clamp(38px,5vw,60px);line-height:1.02;letter-spacing:-.01em;color:var(--ink);margin:0;">' + E(p.name) + '</h1>' +
-          '<div style="font-family:\'Cormorant\',serif;font-size:32px;color:var(--ink);margin-top:22px;">' + E(p.priceFmt) + ' ₽</div>' +
-          '<p style="font-size:15px;line-height:1.75;color:var(--muted);margin:26px 0 0;max-width:440px;">' + E(p.desc) + '</p>' +
-          '<div style="display:flex;flex-direction:column;gap:14px;margin:34px 0 0;padding:26px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);">' + specs + '</div>' +
-          '<div style="display:flex;gap:14px;margin-top:32px;flex-wrap:wrap;">' +
-            '<span data-act="addgo" data-id="' + p.id + '" style="background:var(--accent);color:var(--accent-ink);padding:16px 38px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;">' + E(v.L.addToCart) + '</span>' +
-            '<span data-act="go" data-view="custom" style="border:1px solid var(--line-strong);color:var(--ink);padding:16px 32px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;">' + E(v.L.wantCustom) + '</span>' +
-          '</div>' +
-        '</div></div>' +
-      '<div style="margin-top:96px;border-top:1px solid var(--line);padding-top:40px;">' +
-        '<div style="font-family:\'Cormorant\',serif;font-size:30px;color:var(--ink);margin-bottom:32px;">' + E(v.L.more) + '</div>' +
-        '<div style="display:grid;grid-template-columns:var(--related-cols,repeat(4,1fr));gap:24px;">' + related + '</div>' +
-      '</div></section>';
+    return '<div class="wrap section">'+
+      '<span class="back" data-act="go" data-view="home">'+E(t.back)+'</span>'+
+      '<div class="pd">'+
+        '<div class="media"><div class="img" style="background-image:url('+p.img+')"></div></div>'+
+        '<div><div class="cat">'+E(t.catMap[p.cat]||p.cat)+'</div>'+
+          '<h1>'+E(d.name)+'</h1>'+
+          '<div class="price">'+fmt(p.price)+' ₽</div>'+
+          '<p class="desc">'+E(d.desc)+'</p>'+
+          '<div class="specs">'+specs+'</div>'+
+          '<div class="actions"><span class="btn accent" data-act="addgo" data-id="'+p.id+'">'+E(t.addToCart)+'</span>'+
+            '<span class="btn ghost" data-act="go" data-view="custom">'+E(t.wantCustom)+'</span></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="related"><h2>'+E(t.more)+'</h2><div class="rgrid">'+related+'</div></div>'+
+    '</div>';
   }
 
-  function cartScreen(v){
-    if (!v.isCart) return "";
-    var inner = "";
-    if (v.cartEmpty) {
-      inner = '<div style="padding:80px 0;text-align:center;border-top:1px solid var(--line);"><div style="font-size:15px;color:var(--muted);">' + E(v.L.cartEmptyText) + '</div>' +
-        '<span data-act="go" data-view="home" style="display:inline-block;margin-top:26px;background:var(--accent);color:var(--accent-ink);padding:15px 36px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;">' + E(v.L.toCatalog) + '</span></div>';
-    } else if (v.cartHasItems) {
-      var rows = v.cartItems.map(function(i){
-        return '<div style="display:grid;grid-template-columns:84px 1fr auto;gap:20px;align-items:center;padding:22px 0;border-bottom:1px solid var(--line);">' +
-          '<div style="aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--panel);position:relative;"><div role="img" aria-label="' + E(i.name) + '" style="position:absolute;inset:0;background:' + i.bg + ' center/cover no-repeat;"></div></div>' +
-          '<div><div style="font-family:\'Cormorant\',serif;font-size:21px;color:var(--ink);">' + E(i.name) + '</div>' +
-            '<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-top:5px;">' + E(i.material) + '</div>' +
-            '<div style="display:flex;align-items:center;gap:14px;margin-top:12px;">' +
-              '<span style="display:inline-flex;align-items:center;border:1px solid var(--line-strong);border-radius:999px;">' +
-                '<span data-act="dec" data-id="' + i.id + '" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--muted);">−</span>' +
-                '<span style="min-width:24px;text-align:center;font-size:13px;color:var(--ink);">' + i.qty + '</span>' +
-                '<span data-act="inc" data-id="' + i.id + '" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--muted);">+</span>' +
-              '</span>' +
-              '<span data-act="remove" data-id="' + i.id + '" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);cursor:pointer;">' + E(v.L.remove) + '</span>' +
-            '</div></div>' +
-          '<div style="text-align:right;font-size:15px;color:var(--ink);white-space:nowrap;">' + E(i.lineFmt) + ' ₽</div></div>';
-      }).join("");
-      inner = '<div><div style="display:flex;flex-direction:column;border-top:1px solid var(--line);">' + rows + '</div>' +
-        '<div style="display:flex;justify-content:flex-end;margin-top:34px;"><div style="width:100%;max-width:360px;">' +
-          '<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:8px 0;"><span>' + E(v.L.goods) + ' (' + v.cartCount + ')</span><span>' + E(v.cartTotalFmt) + ' ₽</span></div>' +
-          '<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--line);"><span>' + E(v.L.delivery) + '</span><span>' + E(v.L.deliveryCalc) + '</span></div>' +
-          '<div style="display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;"><span style="font-family:\'Cormorant\',serif;font-size:24px;color:var(--ink);">' + E(v.L.total) + '</span><span style="font-family:\'Cormorant\',serif;font-size:28px;color:var(--ink);">' + E(v.cartTotalFmt) + ' ₽</span></div>' +
-          '<span data-act="checkout" style="display:block;text-align:center;background:var(--accent);color:var(--accent-ink);padding:17px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;">' + E(v.L.checkout) + '</span>' +
-        '</div></div></div>';
-    } else if (v.cartDone) {
-      inner = '<div style="padding:80px 0;text-align:center;border-top:1px solid var(--line);"><div style="font-family:\'Cormorant\',serif;font-size:38px;color:var(--ink);">' + E(v.L.thanksTitle) + '</div>' +
-        '<div style="font-size:15px;color:var(--muted);margin-top:16px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.7;">' + E(v.L.thanksText) + '</div>' +
-        '<span data-act="go" data-view="home" style="display:inline-block;margin-top:30px;border:1px solid var(--line-strong);color:var(--ink);padding:15px 36px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;">' + E(v.L.backCatalog) + '</span></div>';
-    }
-    return '<section style="max-width:1100px;margin:0 auto;padding:48px var(--pad,48px) 100px;">' +
-      '<h1 style="font-family:\'Cormorant\',serif;font-weight:400;font-size:clamp(40px,5vw,64px);color:var(--ink);margin:0 0 40px;letter-spacing:-.01em;">' + E(v.L.cartTitle) + '</h1>' + inner + '</section>';
-  }
-
-  function aboutScreen(v){
-    if (!v.isAbout) return "";
-    var L = v.L;
-    function val(n, t, d){ return '<div style="background:var(--bg-solid);padding:36px 30px;"><div style="font-family:\'Cormorant\',serif;font-size:44px;color:var(--accent);">' + n + '</div><div style="font-size:16px;color:var(--ink);margin-top:12px;">' + E(t) + '</div><p style="font-size:13.5px;line-height:1.7;color:var(--muted);margin:10px 0 0;">' + E(d) + '</p></div>'; }
-    return '<section style="max-width:1440px;margin:0 auto;padding:56px var(--pad,48px) 100px;">' +
-      '<div style="max-width:760px;"><div style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:22px;">' + E(L.aboutEyebrow) + '</div>' +
-        '<h1 style="font-family:\'Cormorant\',serif;font-weight:400;font-size:clamp(42px,5.4vw,76px);line-height:1.0;letter-spacing:-.015em;color:var(--ink);margin:0;">' + E(L.aboutTitle) + '</h1>' +
-        '<p style="font-size:17px;line-height:1.75;color:var(--muted);margin:30px 0 0;">' + E(L.aboutIntro) + '</p></div>' +
-      '<div style="display:grid;grid-template-columns:var(--about-cols,1fr 1fr);gap:var(--detail-gap,56px);align-items:center;margin-top:72px;">' +
-        '<div style="aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:var(--panel);"><img src="assets/handles-dark.png" alt="Lima" style="width:100%;height:100%;object-fit:cover;display:block;"></div>' +
-        '<div><h2 style="font-family:\'Cormorant\',serif;font-weight:400;font-size:34px;color:var(--ink);margin:0 0 18px;">' + E(L.aboutSub2) + '</h2><p style="font-size:15px;line-height:1.8;color:var(--muted);margin:0;">' + E(L.aboutSub2Text) + '</p></div>' +
-      '</div>' +
-      '<div style="display:grid;grid-template-columns:var(--vals-cols,repeat(3,1fr));gap:1px;background:var(--line);margin-top:72px;border:1px solid var(--line);">' +
-        val("01", L.aboutV1t, L.aboutV1d) + val("02", L.aboutV2t, L.aboutV2d) + val("03", L.aboutV3t, L.aboutV3d) +
-      '</div>' +
-      '<div style="text-align:center;margin-top:80px;"><span data-act="go" data-view="custom" style="display:inline-block;background:var(--accent);color:var(--accent-ink);padding:17px 40px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;">' + E(L.aboutCta) + '</span></div>' +
-    '</section>';
-  }
-
-  function customScreen(v){
-    if (!v.isCustom) return "";
-    var L = v.L, body;
-    if (v.customSent) {
-      body = '<div style="margin-top:54px;padding:60px 40px;border:1px solid var(--line);border-radius:18px;text-align:center;background:var(--panel-soft);">' +
-        '<div style="font-family:\'Cormorant\',serif;font-size:36px;color:var(--ink);">' + E(L.customSentTitle) + '</div>' +
-        '<div style="font-size:15px;color:var(--muted);margin-top:14px;line-height:1.7;max-width:420px;margin-left:auto;margin-right:auto;">' + E(L.customSentText) + '</div>' +
-        '<span data-act="go" data-view="home" style="display:inline-block;margin-top:28px;border:1px solid var(--line-strong);color:var(--ink);padding:14px 34px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;">' + E(L.toCatalogShort) + '</span></div>';
+  function cartView(lang){
+    var t=L(), ids=cartIds();
+    var body;
+    if(state.cartDone){
+      body='<div class="done"><div class="tt">'+E(t.thanksTitle)+'</div><p style="margin-top:14px;max-width:440px;margin-inline:auto;line-height:1.7">'+E(t.thanksText)+'</p><div style="margin-top:28px"><span class="btn ghost" data-act="go" data-view="home">'+E(t.backCatalog)+'</span></div></div>';
+    } else if(ids.length===0){
+      body='<div class="empty"><p>'+E(t.cartEmptyText)+'</p><div style="margin-top:24px"><span class="btn accent" data-act="go" data-view="home">'+E(t.toCatalog)+'</span></div></div>';
     } else {
-      function field(label, ph, full){ return '<label style="display:flex;flex-direction:column;gap:9px;' + (full ? "grid-column:1 / -1;" : "") + '"><span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);">' + E(label) + '</span><input type="text" placeholder="' + E(ph) + '" style="' + v.inputStyle + '"></label>'; }
-      body = '<div style="margin-top:54px;display:grid;grid-template-columns:var(--form-cols,1fr 1fr);gap:22px;">' +
-        field(L.fName, L.phName, false) + field(L.fContact, L.phContact, false) + field(L.fType, L.phType, true) +
-        '<label style="display:flex;flex-direction:column;gap:9px;grid-column:1 / -1;"><span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);">' + E(L.fDesc) + '</span><textarea rows="5" placeholder="' + E(L.phDesc) + '" style="' + v.textareaStyle + '"></textarea></label>' +
-        '<div style="grid-column:1 / -1;display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:8px;">' +
-          '<span data-act="sendCustom" style="background:var(--accent);color:var(--accent-ink);padding:16px 40px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;">' + E(L.sendRequest) + '</span>' +
-          '<span style="font-size:12px;color:var(--faint);">' + E(L.orWrite) + '</span>' +
-        '</div></div>';
+      var total=0;
+      var rows=ids.map(function(k){
+        var p=PRODUCTS[k], d=p[lang], id=parseInt(k,10), line=p.price*state.cart[k]; total+=line;
+        return '<div class="cart-row"><div class="th"><div class="img" style="background-image:url('+p.img+')"></div></div>'+
+          '<div><div class="nm">'+E(d.name)+'</div><div class="mt">'+E(d.material)+'</div>'+
+            '<div class="ctl"><span class="qty"><span data-act="dec" data-id="'+id+'">−</span><b>'+state.cart[k]+'</b><span data-act="inc" data-id="'+id+'">+</span></span>'+
+              '<span class="rm" data-act="remove" data-id="'+id+'">'+E(t.remove)+'</span></div></div>'+
+          '<div class="lt">'+fmt(line)+' ₽</div></div>';
+      }).join("");
+      body='<div>'+rows+'<div class="summary">'+
+        '<div class="ln"><span>'+E(t.goods)+' ('+cartCount()+')</span><span>'+fmt(total)+' ₽</span></div>'+
+        '<div class="ln bd"><span>'+E(t.delivery)+'</span><span>'+E(t.deliveryCalc)+'</span></div>'+
+        '<div class="tot"><span class="a">'+E(t.total)+'</span><span class="b">'+fmt(total)+' ₽</span></div>'+
+        '<span class="btn accent" style="display:block" data-act="checkout">'+E(t.checkout)+'</span>'+
+      '</div></div>';
     }
-    return '<section style="max-width:1100px;margin:0 auto;padding:56px var(--pad,48px) 100px;">' +
-      '<div style="max-width:680px;"><div style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:22px;">' + E(L.customEyebrow) + '</div>' +
-      '<h1 style="font-family:\'Cormorant\',serif;font-weight:400;font-size:clamp(40px,5.2vw,72px);line-height:1.0;letter-spacing:-.015em;color:var(--ink);margin:0;">' + E(L.customTitle) + '</h1>' +
-      '<p style="font-size:16px;line-height:1.75;color:var(--muted);margin:26px 0 0;">' + E(L.customIntro) + '</p></div>' + body + '</section>';
+    return '<div class="wrap section"><h1 style="font-family:var(--serif);font-size:clamp(36px,6vw,60px);letter-spacing:-.01em;margin-bottom:34px">'+E(t.cartTitle)+'</h1>'+body+'</div>';
   }
 
-  function deliveryScreen(v){
-    if (!v.isDelivery) return "";
-    var L = v.L;
-    function row(t, p, d, accent){ return '<div style="padding:20px 0;border-bottom:1px solid var(--line);"><div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--ink);font-size:15px;">' + E(t) + '</span><span style="color:' + (accent ? "var(--accent)" : "var(--muted)") + ';font-size:13px;">' + E(p) + '</span></div><p style="font-size:13px;color:var(--muted);margin:8px 0 0;line-height:1.6;">' + E(d) + '</p></div>'; }
-    function pay(t, d){ return '<div style="padding:20px 0;border-bottom:1px solid var(--line);"><span style="color:var(--ink);font-size:15px;">' + E(t) + '</span><p style="font-size:13px;color:var(--muted);margin:8px 0 0;line-height:1.6;">' + E(d) + '</p></div>'; }
-    return '<section style="max-width:1100px;margin:0 auto;padding:56px var(--pad,48px) 100px;">' +
-      '<div style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:22px;">' + E(L.delEyebrow) + '</div>' +
-      '<h1 style="font-family:\'Cormorant\',serif;font-weight:400;font-size:clamp(40px,5.2vw,72px);line-height:1.0;letter-spacing:-.015em;color:var(--ink);margin:0 0 56px;">' + E(L.delTitle) + '</h1>' +
-      '<div style="display:grid;grid-template-columns:var(--about-cols,1fr 1fr);gap:var(--detail-gap,56px);">' +
-        '<div><h2 style="font-family:\'Cormorant\',serif;font-weight:400;font-size:30px;color:var(--ink);margin:0 0 22px;">' + E(L.delivery) + '</h2><div style="display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);">' +
-          row(L.del1, L.free, L.del1d, true) + row(L.del2, L.del2p, L.del2d, false) + row(L.del3, L.del3p, L.del3d, false) + '</div></div>' +
-        '<div><h2 style="font-family:\'Cormorant\',serif;font-weight:400;font-size:30px;color:var(--ink);margin:0 0 22px;">' + E(L.payment) + '</h2><div style="display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);">' +
-          pay(L.pay1, L.pay1d) + pay(L.pay2, L.pay2d) + pay(L.pay3, L.pay3d) + '</div>' +
-          '<div style="margin-top:30px;padding:22px 24px;border-radius:14px;background:var(--panel-soft);font-size:13px;line-height:1.7;color:var(--muted);">' + E(L.payNote) + '</div></div>' +
-      '</div></section>';
+  function aboutView(){
+    var t=L();
+    function v(n,h,d){return '<div class="v"><div class="n">'+n+'</div><h3>'+E(h)+'</h3><p>'+E(d)+'</p></div>';}
+    return '<div class="wrap section page">'+
+      '<div style="max-width:760px"><div class="eyebrow">'+E(t.aboutEyebrow)+'</div><h1>'+E(t.aboutTitle)+'</h1><p class="lead">'+E(t.aboutIntro)+'</p></div>'+
+      '<div class="cols2"><div class="ph"><img src="assets/handles-dark.png" alt=""></div>'+
+        '<div><h2>'+E(t.aboutSub2)+'</h2><p>'+E(t.aboutSub2Text)+'</p></div></div>'+
+      '<div class="values">'+v("01",t.aboutV1t,t.aboutV1d)+v("02",t.aboutV2t,t.aboutV2d)+v("03",t.aboutV3t,t.aboutV3d)+'</div>'+
+      '<div class="center"><span class="btn accent" data-act="go" data-view="custom">'+E(t.aboutCta)+'</span></div>'+
+    '</div>';
   }
 
-  function contactsScreen(v){
-    if (!v.isContacts) return "";
-    var L = v.L;
-    function card(label, big, note){ return '<div style="background:var(--bg-solid);padding:34px 30px;"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:12px;">' + E(label) + '</div><div style="font-family:\'Cormorant\',serif;font-size:24px;color:var(--ink);">' + E(big) + '</div><p style="font-size:13px;color:var(--muted);margin:10px 0 0;">' + E(note) + '</p></div>'; }
-    return '<section style="max-width:1100px;margin:0 auto;padding:56px var(--pad,48px) 100px;">' +
-      '<div style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:22px;">' + E(L.conEyebrow) + '</div>' +
-      '<h1 style="font-family:\'Cormorant\',serif;font-weight:400;font-size:clamp(40px,5.2vw,72px);line-height:1.0;letter-spacing:-.015em;color:var(--ink);margin:0 0 56px;">' + E(L.conTitle) + '</h1>' +
-      '<div style="display:grid;grid-template-columns:var(--contacts-cols,repeat(3,1fr));gap:1px;background:var(--line);border:1px solid var(--line);">' +
-        card(L.phone, "+7 900 000-00-00", L.hours) + card(L.emailW, "hello@lima-wood.ru", L.emailNote) + card(L.social, "@lima.wood", L.socialNote) +
-      '</div>' +
-      '<div style="display:grid;grid-template-columns:var(--about-cols,1fr 1fr);gap:var(--detail-gap,56px);align-items:center;margin-top:48px;">' +
-        '<div><h2 style="font-family:\'Cormorant\',serif;font-weight:400;font-size:30px;color:var(--ink);margin:0 0 14px;">' + E(L.conWsTitle) + '</h2><p style="font-size:15px;line-height:1.8;color:var(--muted);margin:0;">' + E(L.conWsText) + '</p>' +
-          '<span data-act="go" data-view="custom" style="display:inline-block;margin-top:26px;background:var(--accent);color:var(--accent-ink);padding:15px 34px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;">' + E(L.conWsCta) + '</span></div>' +
-        '<div style="aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:var(--panel);"><img src="assets/board-bread.png" alt="Lima" style="width:100%;height:100%;object-fit:cover;display:block;"></div>' +
-      '</div></section>';
+  function customView(){
+    var t=L(), body;
+    if(state.customSent){
+      body='<div class="sent"><div class="tt">'+E(t.customSentTitle)+'</div><p>'+E(t.customSentText)+'</p><div style="margin-top:26px"><span class="btn ghost" data-act="go" data-view="home">'+E(t.toCatalogShort)+'</span></div></div>';
+    } else {
+      function f(lab,ph,full){return '<label'+(full?' class="full"':'')+'><span class="fl">'+E(lab)+'</span><input type="text" placeholder="'+E(ph)+'"></label>';}
+      body='<div class="form">'+f(t.fName,t.phName)+f(t.fContact,t.phContact)+f(t.fType,t.phType,1)+
+        '<label class="full"><span class="fl">'+E(t.fDesc)+'</span><textarea rows="5" placeholder="'+E(t.phDesc)+'"></textarea></label>'+
+        '<div class="sub"><span class="btn accent" data-act="sendCustom">'+E(t.sendRequest)+'</span><span class="hint">'+E(t.orWrite)+'</span></div></div>';
+    }
+    return '<div class="wrap section page"><div style="max-width:680px"><div class="eyebrow">'+E(t.customEyebrow)+'</div><h1>'+E(t.customTitle)+'</h1><p class="lead">'+E(t.customIntro)+'</p></div>'+body+'</div>';
   }
 
-  function footer(v){
-    var L = v.L;
-    var sections = v.navItems.map(function(n){ return '<span data-act="go" data-view="' + n.view + '" style="font-size:12.5px;color:var(--muted);cursor:pointer;letter-spacing:.02em;">' + E(n.longLabel) + '</span>'; }).join("");
-    return '<footer style="position:relative;margin-top:40px;background:linear-gradient(180deg,transparent,var(--footer-bg) 90px);">' +
-      '<div style="position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--line) 30%,var(--line) 70%,transparent);"></div>' +
-      '<div style="max-width:1440px;margin:0 auto;padding:38px var(--pad,48px) 0;display:grid;grid-template-columns:var(--footer-cols,1.6fr 1fr 1fr);gap:32px;">' +
-        '<div style="max-width:300px;"><div style="display:flex;align-items:center;gap:11px;margin-bottom:12px;"><div role="img" aria-label="Lima" style="height:26px;width:18px;background:var(--logo-emblem) center/contain no-repeat;flex:none;"></div><span style="font-family:\'Cormorant\',serif;font-size:22px;letter-spacing:.06em;color:var(--ink);">LIMA</span></div>' +
-          '<p style="font-size:12px;line-height:1.7;color:var(--faint);margin:0;">' + E(L.footerDesc) + '</p></div>' +
-        '<div style="display:flex;flex-direction:column;gap:9px;"><div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:2px;">' + E(L.footerSections) + '</div>' + sections + '</div>' +
-        '<div style="display:flex;flex-direction:column;gap:9px;"><div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:2px;">' + E(L.footerContacts) + '</div>' +
-          '<span style="font-size:12.5px;color:var(--muted);">+7 900 000-00-00</span><span style="font-size:12.5px;color:var(--muted);">hello@lima-wood.ru</span><span style="font-size:12.5px;color:var(--muted);">@lima.wood</span></div>' +
-      '</div>' +
-      '<div style="max-width:1440px;margin:24px auto 0;padding:13px var(--pad,48px);border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11px;letter-spacing:.04em;color:var(--faint);"><span>© 2025 Lima</span><span>' + E(L.handmade) + '</span></div>' +
-    '</footer>';
+  function deliveryView(){
+    var t=L();
+    function row(tt,pp,dd,free){return '<div class="row"><div class="t"><span>'+E(tt)+'</span><span class="'+(free?"free":"")+'">'+E(pp)+'</span></div><p>'+E(dd)+'</p></div>';}
+    function pay(tt,dd){return '<div class="row"><div class="t"><span>'+E(tt)+'</span></div><p>'+E(dd)+'</p></div>';}
+    return '<div class="wrap section page"><div class="eyebrow">'+E(t.delEyebrow)+'</div><h1 style="margin-bottom:46px">'+E(t.delTitle)+'</h1>'+
+      '<div class="twolist"><div><h2>'+E(t.delivery)+'</h2><div class="list">'+row(t.del1,t.free,t.del1d,1)+row(t.del2,t.del2p,t.del2d)+row(t.del3,t.del3p,t.del3d)+'</div></div>'+
+      '<div><h2>'+E(t.payment)+'</h2><div class="list">'+pay(t.pay1,t.pay1d)+pay(t.pay2,t.pay2d)+pay(t.pay3,t.pay3d)+'</div><div class="note">'+E(t.payNote)+'</div></div></div></div>';
   }
 
-  /* ============================ render ============================ */
+  function contactsView(){
+    var t=L();
+    function c(lab,big,note){return '<div class="c"><div class="lbl">'+E(lab)+'</div><div class="big">'+E(big)+'</div><p>'+E(note)+'</p></div>';}
+    return '<div class="wrap section page"><div class="eyebrow">'+E(t.conEyebrow)+'</div><h1 style="margin-bottom:46px">'+E(t.conTitle)+'</h1>'+
+      '<div class="ccards">'+c(t.phone,"+7 900 000-00-00",t.hours)+c(t.emailW,"hello@lima-wood.ru",t.emailNote)+c(t.social,"@lima.wood",t.socialNote)+'</div>'+
+      '<div class="cols2" style="margin-top:0"><div><h2>'+E(t.conWsTitle)+'</h2><p>'+E(t.conWsText)+'</p><div style="margin-top:24px"><span class="btn accent" data-act="go" data-view="custom">'+E(t.conWsCta)+'</span></div></div>'+
+        '<div class="ph"><img src="assets/board-bread.png" alt=""></div></div></div>';
+  }
+
+  function footer(){
+    var t=L();
+    var sec = t.nav.map(function(n){return '<span class="lnk" data-act="go" data-view="'+n.view+'">'+E(n.l)+'</span>';}).join("");
+    return '<footer class="ftr"><div class="ftr-in">'+
+      '<div><div class="b">'+EMBLEM+'<b>LIMA</b></div><p class="desc">'+E(t.footerDesc)+'</p></div>'+
+      '<div class="col"><div class="h">'+E(t.footerSections)+'</div>'+sec+'</div>'+
+      '<div class="col"><div class="h">'+E(t.footerContacts)+'</div><span>+7 900 000-00-00</span><span>hello@lima-wood.ru</span><span>@lima.wood</span></div>'+
+    '</div><div class="ftr-bottom"><span>© 2025 Lima</span><span>'+E(t.handmade)+'</span></div></footer>';
+  }
+
+  /* ===================== render ===================== */
   function render(){
-    var v = vals(); VL = v;
-    var html = '<div style="' + v.rootStyle + '">' +
-      header(v) + logo() + menu(v) + hero(v) +
-      homeScreen(v) + productScreen(v) + cartScreen(v) + aboutScreen(v) + customScreen(v) + deliveryScreen(v) + contactsScreen(v) +
-      footer(v) + '</div>';
-    app.innerHTML = html;
+    var lang = state.lang, v = state.view, screen;
+    if (v==="product") screen = productView(lang);
+    else if (v==="cart") screen = cartView(lang);
+    else if (v==="about") screen = aboutView();
+    else if (v==="custom") screen = customView();
+    else if (v==="delivery") screen = deliveryView();
+    else if (v==="contacts") screen = contactsView();
+    else screen = homeView(lang);
+    app.innerHTML = header(lang) + menu(lang) + screen + footer();
   }
 
-  /* ============================ morphing logo (verbatim port) ============================ */
-  function measureMorph(){
-    var lg = D.getElementById("limaLogo"), slot = D.getElementById("limaLogoSlot");
-    if (!lg || !slot) return false;
-    var prev = lg.style.transform; lg.style.transform = "none";
-    var lr = lg.getBoundingClientRect(), sr = slot.getBoundingClientRect();
-    lg.style.transform = prev;
-    if (!lr.width || !sr.width) return false;
-    var Fnat = parseFloat(W.getComputedStyle(lg).fontSize) || 84;
-    _m = { wNat: lr.width, hNat: lr.height, sx: sr.left, sy: sr.top, sH: sr.height, Fnat: Fnat };
-    return true;
-  }
-  function positionLogo(p){
-    var lg = D.getElementById("limaLogo"), m = _m;
-    if (!lg || !m) return;
-    var vw = W.innerWidth || 1200;
-    var heroH = Math.max(360, Math.round(W.innerHeight * 0.56));
-    var ratioSmall = m.sH / m.hNat;
-    var ratio = 1 + (ratioSmall - 1) * p;
-    var F = m.Fnat * ratio;
-    var bx = (vw - m.wNat) / 2;
-    var by = heroH * 0.40 - m.hNat / 2;
-    var tx = bx + (m.sx - bx) * p;
-    var ty = by + (m.sy - by) * p;
-    lg.style.fontSize = F + "px";
-    lg.style.transform = "translate(" + tx + "px," + ty + "px)";
-  }
-  function applyScroll(){
-    var compact = D.getElementById("limaCompact"), lg = D.getElementById("limaLogo");
-    if (!compact || !lg) return;
-    var y = W.scrollY || D.documentElement.scrollTop || 0;
-    if (!_m || y < 4) measureMorph();
-    var heroEl = D.getElementById("limaHero");
-    if (state.view !== "home") {
-      compact.style.opacity = "1"; compact.style.pointerEvents = "auto";
-      if (heroEl) heroEl.style.opacity = "0";
-      positionLogo(1); return;
-    }
-    var heroH = Math.max(360, Math.round(W.innerHeight * 0.56));
-    var fp = Math.min(1, Math.max(0, y / (heroH * 0.7)));
-    var p = fp * fp * (3 - 2 * fp);
-    positionLogo(p);
-    if (heroEl) { var hf = Math.min(1, Math.max(0, (fp - 0.5) / 0.5)); heroEl.style.opacity = String(1 - hf * hf * (3 - 2 * hf)); }
-    compact.style.opacity = "1"; compact.style.pointerEvents = "auto";
-  }
-
-  /* ============================ events ============================ */
+  /* ===================== events ===================== */
   app.addEventListener("click", function(e){
     var el = e.target.closest ? e.target.closest("[data-act]") : null;
-    if (!el || !app.contains(el)) return;
-    var act = el.getAttribute("data-act");
-    var id = el.getAttribute("data-id");
-    switch (act) {
+    if (!el) return;
+    var a = el.getAttribute("data-act"), id = el.getAttribute("data-id");
+    switch(a){
       case "go": go(el.getAttribute("data-view")); break;
-      case "goTop": goTop(); break;
+      case "goTop": go("home"); break;
       case "toggleMenu": toggleMenu(); break;
       case "lang": setLang(el.getAttribute("data-lang")); break;
       case "cat": setCategory(el.getAttribute("data-cat")); break;
-      case "open": openProduct(parseInt(id, 10)); break;
-      case "add": e.stopPropagation(); addToCart(parseInt(id, 10)); break;
-      case "addgo": addToCart(parseInt(id, 10)); go("cart"); break;
-      case "inc": changeQty(parseInt(id, 10), 1); break;
-      case "dec": changeQty(parseInt(id, 10), -1); break;
-      case "remove": removeFromCart(parseInt(id, 10)); break;
+      case "open": openProduct(parseInt(id,10)); break;
+      case "add": e.stopPropagation(); addToCart(parseInt(id,10)); break;
+      case "addgo": addToCart(parseInt(id,10)); go("cart"); break;
+      case "inc": changeQty(parseInt(id,10),1); break;
+      case "dec": changeQty(parseInt(id,10),-1); break;
+      case "remove": removeFromCart(parseInt(id,10)); break;
       case "checkout": checkout(); break;
       case "sendCustom": sendCustom(); break;
+      case "scrollCatalog": scrollCatalog(); break;
     }
   });
 
-  W.addEventListener("scroll", applyScroll, { passive: true });
-  W.addEventListener("resize", function(){ _m = null; if (state.vw !== W.innerWidth) setState({ vw: W.innerWidth }); else applyScroll(); });
-
-  /* ============================ init ============================ */
   render();
-  applyScroll();
-  // re-measure once fonts have loaded (logo metrics depend on Cormorant)
-  if (D.fonts && D.fonts.ready) D.fonts.ready.then(function(){ _m = null; applyScroll(); });
-  W.addEventListener("load", function(){ _m = null; applyScroll(); });
 })();
 </script>
 </body>
