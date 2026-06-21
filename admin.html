@@ -57,16 +57,27 @@
   .grid2{display:grid;grid-template-columns:1fr;gap:12px;}
   @media(min-width:680px){.grid2{grid-template-columns:1fr 1fr;}}
 
-  /* product editor */
-  .prod{display:grid;grid-template-columns:120px 1fr;gap:18px;background:var(--panel-soft);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px;}
-  @media(max-width:620px){.prod{grid-template-columns:1fr;}}
-  .prod .media{position:relative;}
-  .prod .media .img{width:100%;aspect-ratio:4/5;border-radius:10px;background:var(--panel) center/cover no-repeat;border:1px solid var(--line);}
-  .prod .media .up{margin-top:8px;}
-  .prod .media .up input{display:none;}
-  .prod .media .uplab{display:block;text-align:center;padding:8px;border:1px dashed var(--line-strong);border-radius:8px;cursor:pointer;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
-  .prod .media .uplab:hover{color:var(--ink);border-color:var(--accent);}
-  .prod .pid{font-size:11px;color:var(--faint);margin-top:6px;text-align:center;}
+  /* product editor (compact, collapsible) */
+  .prod{background:var(--panel-soft);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+  .prod>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:13px;padding:9px 13px;}
+  .prod>summary::-webkit-details-marker{display:none;}
+  .prod[open]>summary{border-bottom:1px solid var(--line);}
+  .prod .thumb{width:42px;height:52px;border-radius:7px;background:var(--panel) center/cover no-repeat;flex:none;border:1px solid var(--line);}
+  .prod .sumtext{min-width:0;flex:1;}
+  .prod .sumname{font-family:var(--serif);font-size:18px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .prod .summeta{font-size:12px;color:var(--muted);margin-top:2px;}
+  .prod summary .btn.sm{padding:7px 11px;font-size:11px;flex:none;}
+  .prod .chev{color:var(--faint);transition:transform .2s;flex:none;}
+  .prod[open] .chev{transform:rotate(180deg);}
+  .prod .body{padding:14px 14px 16px;}
+  .prod .uprow{display:flex;gap:14px;align-items:flex-start;margin:0 0 16px;}
+  .prod .uprow .img{width:90px;aspect-ratio:4/5;border-radius:9px;background:var(--panel) center/cover no-repeat;flex:none;border:1px solid var(--line);}
+  .prod .uprow .upcol{min-width:0;flex:1;}
+  .prod .uplab{display:inline-block;padding:9px 14px;border:1px dashed var(--line-strong);border-radius:8px;cursor:pointer;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+  .prod .uplab:hover{color:var(--ink);border-color:var(--accent);}
+  .prod .uplab input{display:none;}
+  .prod .imginfo{font-size:12px;color:var(--faint);margin-top:9px;line-height:1.5;word-break:break-word;}
+  .prod .imginfo b{color:var(--accent);}
   .lang2{display:grid;grid-template-columns:1fr;gap:14px;}
   @media(min-width:780px){.lang2{grid-template-columns:1fr 1fr;}}
   .langbox{border:1px solid var(--line);border-radius:10px;padding:12px;}
@@ -74,7 +85,6 @@
   .prodhead{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px;}
   .prodhead .field{margin:0;}
   .prodhead .cat{min-width:150px;} .prodhead .price{width:130px;}
-  .prodhead .del{margin-left:auto;}
   .hint{font-size:12px;color:var(--faint);margin-top:5px;}
   code{background:#0e0f13;padding:1px 6px;border-radius:5px;font-size:12px;}
 </style>
@@ -508,6 +518,7 @@
   /* ============ helpers ============ */
   function $(id){ return D.getElementById(id); }
   function E(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
+  function fmt(n){ return String(n==null?0:n).replace(/\B(?=(\d{3})+(?!\d))/g," "); }
   function clone(o){ return JSON.parse(JSON.stringify(o)); }
   function repoParts(){ var v=($("repo").value||"SashaRX/lima").trim().split("/"); return {owner:v[0], repo:v[1]||"lima"}; }
   function branch(){ return ($("branch").value||"main").trim(); }
@@ -566,24 +577,38 @@
       '<div class="field"><label class="fl">Характеристики (строки «Ключ: Значение»)</label><textarea rows="3" data-idx="'+it.id+'" data-f="'+lang+'.specs">'+E(it["_"+lang+"Specs"])+'</textarea></div>'+
     '</div>';
   }
-  function prodCard(it){
+  function bgStyle(it){
     var bg = it._img ? it._img.dataUri : (it.img||"");
+    if(!bg) return "";
+    return "background-image:url("+(it._img?"'"+bg+"'":bg)+")";
+  }
+  function imgInfo(it){
+    if(it._img) return 'Новое фото: <b>'+it._img.ext.toUpperCase()+'</b> · '+Math.round(it._img.size/1024)+' КБ · '+it._img.w+'×'+it._img.h+' — загрузится при публикации';
+    return it.img ? 'Текущее фото: '+E(it.img) : 'Фото не задано';
+  }
+  function prodCard(it){
     var opts = CATS.map(function(c){return '<option'+(c===it.cat?" selected":"")+'>'+E(c)+'</option>';}).join("");
-    return '<div class="prod" data-card="'+it.id+'">'+
-      '<div class="media">'+
-        '<div class="img" style="'+(bg?'background-image:url('+(it._img?"'"+bg+"'":bg)+')':'')+'"></div>'+
-        '<div class="up"><label class="uplab">Загрузить фото<input type="file" accept="image/*" data-idx="'+it.id+'" data-f="image"></label></div>'+
-        '<div class="pid">id '+it.id+(it._img?' · новое фото':'')+'</div>'+
-      '</div>'+
-      '<div>'+
+    return '<details class="prod" data-card="'+it.id+'">'+
+      '<summary>'+
+        '<div class="thumb" style="'+bgStyle(it)+'"></div>'+
+        '<div class="sumtext"><div class="sumname">'+E((it.ru&&it.ru.name)||("id "+it.id))+'</div>'+
+          '<div class="summeta">'+E(it.cat||"")+' · '+fmt(it.price||0)+' ₽'+(it._img?" · новое фото":"")+'</div></div>'+
+        '<button class="btn danger sm" data-del="'+it.id+'">Удалить</button>'+
+        '<span class="chev">▾</span>'+
+      '</summary>'+
+      '<div class="body">'+
+        '<div class="uprow">'+
+          '<div class="img" style="'+bgStyle(it)+'"></div>'+
+          '<div class="upcol"><label class="uplab">Загрузить / заменить фото<input type="file" accept="image/*" data-idx="'+it.id+'" data-f="image"></label>'+
+            '<div class="imginfo">'+imgInfo(it)+'</div></div>'+
+        '</div>'+
         '<div class="prodhead">'+
           '<div class="field cat"><label class="fl">Категория</label><select data-idx="'+it.id+'" data-f="cat">'+opts+'</select></div>'+
           '<div class="field price"><label class="fl">Цена, ₽</label><input type="number" min="0" data-idx="'+it.id+'" data-f="price" value="'+E(it.price)+'"></div>'+
-          '<button class="btn danger del" data-del="'+it.id+'">Удалить</button>'+
         '</div>'+
         '<div class="lang2">'+langBox(it,"ru","Русский")+langBox(it,"en","English")+'</div>'+
       '</div>'+
-    '</div>';
+    '</details>';
   }
   function renderEditor(){
     $("editor").innerHTML = items.map(prodCard).join("") || '<p class="muted">Нет товаров. Нажмите «Добавить товар».</p>';
@@ -594,10 +619,17 @@
   function onField(e){
     var el=e.target, idAttr=el.getAttribute("data-idx"); if(idAttr==null) return;
     var it=byId(parseInt(idAttr,10)); if(!it) return; var f=el.getAttribute("data-f");
+    if(f==="image") return;
     if(f==="price") it.price=parseInt(el.value,10)||0;
     else if(f==="cat") it.cat=el.value;
     else if(f.indexOf(".")>0){ var p=f.split("."); var L=it[p[0]]||(it[p[0]]={name:"",material:"",desc:"",specs:[]});
       if(p[1]==="specs") it["_"+p[0]+"Specs"]=el.value; else L[p[1]]=el.value; }
+    // live-update the collapsed summary
+    if(f==="price"||f==="cat"||f==="ru.name"){
+      var card=el.closest("details.prod");
+      if(card){ var nm=card.querySelector(".sumname"); if(nm) nm.textContent=(it.ru&&it.ru.name)||("id "+it.id);
+        var mt=card.querySelector(".summeta"); if(mt) mt.textContent=(it.cat||"")+" · "+fmt(it.price||0)+" ₽"+(it._img?" · новое фото":""); }
+    }
   }
   $("editor").addEventListener("input", onField);
   $("editor").addEventListener("change", function(e){
@@ -605,24 +637,57 @@
     onField(e);
   });
   $("editor").addEventListener("click", function(e){
-    var del=e.target.getAttribute("data-del"); if(del==null) return;
-    var id=parseInt(del,10), it=byId(id);
+    var d=e.target.closest("[data-del]"); if(!d) return;
+    e.preventDefault(); // do not toggle the <details>
+    var id=parseInt(d.getAttribute("data-del"),10), it=byId(id);
     if(it && W.confirm("Удалить товар «"+((it.ru&&it.ru.name)||id)+"»?")){ items=items.filter(function(x){return x.id!==id;}); renderEditor(); }
   });
 
+  var MAX_SIDE = 1200, Q = 0.82;
   function onImage(input){
     var file=input.files&&input.files[0]; if(!file) return;
     var it=byId(parseInt(input.getAttribute("data-idx"),10)); if(!it) return;
-    var fr=new FileReader();
-    fr.onload=function(){
-      var dataUri=fr.result; var m=/^data:([^;]+);base64,(.*)$/.exec(dataUri);
-      if(!m){ status("Не удалось прочитать файл","err"); return; }
-      var mime=m[1]; var ext=(mime.split("/")[1]||"png").replace("jpeg","jpg").replace("svg+xml","svg");
-      it._img={ dataUri:dataUri, b64:m[2], mime:mime, ext:ext };
-      renderEditor();
-      status("Фото готово к публикации (товар id "+it.id+")","ok");
+    status("Оптимизирую фото…","work");
+    optimizeImage(file, function(opt){
+      if(!opt){ status("Не удалось обработать изображение","err"); return; }
+      it._img=opt; renderEditor();
+      var d=D.querySelector('details.prod[data-card="'+it.id+'"]'); if(d) d.open=true;
+      status("Фото готово: "+opt.ext.toUpperCase()+" · "+Math.round(opt.size/1024)+" КБ · "+opt.w+"×"+opt.h+(opt.from?(" (из "+Math.round(opt.from/1024)+" КБ)"):""),"ok");
+    });
+  }
+  // resize to MAX_SIDE long side, then encode trying AVIF -> WebP -> JPEG, keep the smallest the browser actually produced
+  function optimizeImage(file, done){
+    var url=URL.createObjectURL(file), img=new Image(); var orig=file.size||0;
+    img.onload=function(){
+      URL.revokeObjectURL(url);
+      var w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+      var s=Math.min(1, MAX_SIDE/Math.max(w,h)); var cw=Math.max(1,Math.round(w*s)), ch=Math.max(1,Math.round(h*s));
+      var c=D.createElement("canvas"); c.width=cw; c.height=ch;
+      var ctx=c.getContext("2d"); if(!ctx){ done(null); return; }
+      ctx.imageSmoothingQuality="high"; ctx.drawImage(img,0,0,cw,ch);
+      encodeBest(c, function(blob,ext,mime){
+        if(!blob){ done(null); return; }
+        var fr=new FileReader();
+        fr.onload=function(){ var m=/^data:[^;]+;base64,(.*)$/.exec(fr.result);
+          done(m?{ b64:m[1], ext:ext, mime:mime, dataUri:fr.result, size:blob.size, w:cw, h:ch, from:orig }:null); };
+        fr.readAsDataURL(blob);
+      });
     };
-    fr.readAsDataURL(file);
+    img.onerror=function(){ URL.revokeObjectURL(url); done(null); };
+    img.src=url;
+  }
+  function encodeBest(canvas, done){
+    var tries=[["image/avif","avif",0.6],["image/webp","webp",Q],["image/jpeg","jpg",Q]];
+    var got=[], left=tries.length;
+    tries.forEach(function(t){
+      try{ canvas.toBlob(function(b){ if(b && b.type===t[0]) got.push({b:b,ext:t[1],mime:t[0]}); if(--left===0) fin(); }, t[0], t[2]); }
+      catch(e){ if(--left===0) fin(); }
+    });
+    function fin(){
+      if(!got.length){ canvas.toBlob(function(b){ done(b,"png","image/png"); }, "image/png"); return; }
+      got.sort(function(a,b){return a.b.size-b.b.size;});
+      done(got[0].b, got[0].ext, got[0].mime);
+    }
   }
 
   /* ============ add ============ */
@@ -631,7 +696,7 @@
     items.push({ id:nextId, price:0, cat:CATS[0], img:"",
       ru:{name:"Новый товар",material:"",desc:"",specs:[]}, en:{name:"New product",material:"",desc:"",specs:[]} });
     renderEditor();
-    W.scrollTo(0, D.body.scrollHeight);
+    var d=D.querySelector('details.prod[data-card="'+nextId+'"]'); if(d){ d.open=true; d.scrollIntoView({behavior:"smooth",block:"center"}); }
     status("Добавлен товар id "+nextId+" — заполните и опубликуйте","ok");
   };
 
