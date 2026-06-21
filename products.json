@@ -1,9 +1,9 @@
 [
   {
     "id": 0,
-    "price": 4900,
-    "cat": "Доски",
-    "img": "catalog/boards/board-bread.png",
+    "price": 49000,
+    "cat": "Подносы",
+    "img": "catalog/uploads/p0-1782081336203.jpg",
     "ru": {
       "name": "Доска «Торцевая»",
       "material": "Бук · торцевой срез",
