@@ -237,6 +237,8 @@
 "use strict";
 (function () {
   var W = window, D = document;
+  // hidden admin entry: /lima/#admin -> admin panel
+  if (W.location.hash === "#admin") { W.location.replace("admin.html"); return; }
 
   /* ===================== DATA ===================== */
   var I18N = {
@@ -546,6 +548,11 @@
   });
 
   render();
+  // load the published catalog (edited via admin.html); the inlined PRODUCTS above is the offline fallback
+  fetch("products.json?cb=" + Date.now())
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) { if (Array.isArray(d) && d.length) { PRODUCTS = d; render(); } })
+    .catch(function () {});
 })();
 </script>
 </body>

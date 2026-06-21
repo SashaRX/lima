@@ -1,0 +1,354 @@
+[
+  {
+    "id": 0,
+    "price": 4900,
+    "cat": "Доски",
+    "img": "catalog/boards/board-bread.png",
+    "ru": {
+      "name": "Доска «Торцевая»",
+      "material": "Бук · торцевой срез",
+      "desc": "Торцевой набор плашек бережёт лезвие ножа и почти не показывает следов реза. С каждым годом службы доска становится только красивее.",
+      "specs": [
+        {
+          "k": "Материал",
+          "v": "Массив бука"
+        },
+        {
+          "k": "Размер",
+          "v": "35 × 25 × 4 см"
+        },
+        {
+          "k": "Отделка",
+          "v": "Масло-воск"
+        }
+      ]
+    },
+    "en": {
+      "name": "End-grain Board",
+      "material": "Beech · end grain",
+      "desc": "An end-grain block protects the knife edge and barely shows cut marks. The board only grows more beautiful with every year of use.",
+      "specs": [
+        {
+          "k": "Material",
+          "v": "Solid beech"
+        },
+        {
+          "k": "Size",
+          "v": "35 × 25 × 4 cm"
+        },
+        {
+          "k": "Finish",
+          "v": "Oil-wax"
+        }
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "price": 6500,
+    "cat": "Посуда",
+    "img": "catalog/tableware/sushi-white.png",
+    "ru": {
+      "name": "Набор «Дзен»",
+      "material": "Бук · масло-воск",
+      "desc": "Минималистичный сет для сервировки и подачи — доска, подставка и пиала, выточенные из одного бруска бука.",
+      "specs": [
+        {
+          "k": "Материал",
+          "v": "Массив бука"
+        },
+        {
+          "k": "Состав",
+          "v": "3 предмета"
+        },
+        {
+          "k": "Отделка",
+          "v": "Масло-воск"
+        }
+      ]
+    },
+    "en": {
+      "name": "Zen Set",
+      "material": "Beech · oil-wax",
+      "desc": "A minimalist set for serving — board, stand and bowl, turned from a single beech billet.",
+      "specs": [
+        {
+          "k": "Material",
+          "v": "Solid beech"
+        },
+        {
+          "k": "Set",
+          "v": "3 pieces"
+        },
+        {
+          "k": "Finish",
+          "v": "Oil-wax"
+        }
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "price": 4200,
+    "cat": "Подносы",
+    "img": "catalog/trays/sushi-table.png",
+    "ru": {
+      "name": "Сервировка «Венге»",
+      "material": "Бук · обжиг",
+      "desc": "Сервировочный поднос с тёмной обожжённой поверхностью. Подойдёт для подачи и как акцент в интерьере.",
+      "specs": [
+        {
+          "k": "Материал",
+          "v": "Массив бука"
+        },
+        {
+          "k": "Размер",
+          "v": "40 × 22 см"
+        },
+        {
+          "k": "Отделка",
+          "v": "Обжиг + масло"
+        }
+      ]
+    },
+    "en": {
+      "name": "Wenge Serving Set",
+      "material": "Beech · scorched",
+      "desc": "A serving tray with a dark scorched surface. Works for plating and as an interior accent.",
+      "specs": [
+        {
+          "k": "Material",
+          "v": "Solid beech"
+        },
+        {
+          "k": "Size",
+          "v": "40 × 22 cm"
+        },
+        {
+          "k": "Finish",
+          "v": "Scorched + oil"
+        }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "price": 2800,
+    "cat": "Аксессуары",
+    "img": "catalog/accessories/paper-holder.png",
+    "ru": {
+      "name": "Держатель полотенец",
+      "material": "Бук",
+      "desc": "Настольный держатель для бумажных полотенец из цельного бука. Устойчивое основание, спокойная форма.",
+      "specs": [
+        {
+          "k": "Материал",
+          "v": "Массив бука"
+        },
+        {
+          "k": "Высота",
+          "v": "32 см"
+        },
+        {
+          "k": "Отделка",
+          "v": "Масло-воск"
+        }
+      ]
+    },
+    "en": {
+      "name": "Towel Holder",
+      "material": "Beech",
+      "desc": "A tabletop paper-towel holder from solid beech. A stable base and a calm form.",
+      "specs": [
+        {
+          "k": "Material",
+          "v": "Solid beech"
+        },
+        {
+          "k": "Height",
+          "v": "32 cm"
+        },
+        {
+          "k": "Finish",
+          "v": "Oil-wax"
+        }
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "price": 5400,
+    "cat": "Посуда",
+    "img": "catalog/tableware/set-box.png",
+    "ru": {
+      "name": "Подарочный набор",
+      "material": "В фирменной коробке",
+      "desc": "Готовый подарок: набор кухонных предметов Lima в фирменной деревянной коробке с клеймом мастера.",
+      "specs": [
+        {
+          "k": "Состав",
+          "v": "Набор предметов"
+        },
+        {
+          "k": "Упаковка",
+          "v": "Деревянная коробка"
+        },
+        {
+          "k": "Отделка",
+          "v": "Масло-воск"
+        }
+      ]
+    },
+    "en": {
+      "name": "Gift Set",
+      "material": "In a branded box",
+      "desc": "A ready gift: a set of Lima kitchen pieces in a branded wooden box with the maker’s mark.",
+      "specs": [
+        {
+          "k": "Set",
+          "v": "Assorted pieces"
+        },
+        {
+          "k": "Packaging",
+          "v": "Wooden box"
+        },
+        {
+          "k": "Finish",
+          "v": "Oil-wax"
+        }
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "price": 1900,
+    "cat": "Аксессуары",
+    "img": "catalog/accessories/rolling-pin.png",
+    "ru": {
+      "name": "Скалка из бука",
+      "material": "Цельный массив",
+      "desc": "Классическая скалка, выточенная из цельного бруска бука. Приятная тяжесть и гладкая поверхность.",
+      "specs": [
+        {
+          "k": "Материал",
+          "v": "Массив бука"
+        },
+        {
+          "k": "Длина",
+          "v": "45 см"
+        },
+        {
+          "k": "Отделка",
+          "v": "Масло-воск"
+        }
+      ]
+    },
+    "en": {
+      "name": "Beech Rolling Pin",
+      "material": "Solid wood",
+      "desc": "A classic rolling pin turned from a single beech billet. Pleasant weight and a smooth surface.",
+      "specs": [
+        {
+          "k": "Material",
+          "v": "Solid beech"
+        },
+        {
+          "k": "Length",
+          "v": "45 cm"
+        },
+        {
+          "k": "Finish",
+          "v": "Oil-wax"
+        }
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "price": 3200,
+    "cat": "Аксессуары",
+    "img": "catalog/accessories/handles-dark.png",
+    "ru": {
+      "name": "Рукояти «Венге»",
+      "material": "Бук · обжиг",
+      "desc": "Комплект обожжённых рукоятей из бука — для ножей или кухонного инструмента. Тёплый тёмный тон.",
+      "specs": [
+        {
+          "k": "Материал",
+          "v": "Массив бука"
+        },
+        {
+          "k": "Обработка",
+          "v": "Обжиг"
+        },
+        {
+          "k": "Отделка",
+          "v": "Масло-воск"
+        }
+      ]
+    },
+    "en": {
+      "name": "Wenge Handles",
+      "material": "Beech · scorched",
+      "desc": "A set of scorched beech handles — for knives or kitchen tools. A warm dark tone.",
+      "specs": [
+        {
+          "k": "Material",
+          "v": "Solid beech"
+        },
+        {
+          "k": "Treatment",
+          "v": "Scorched"
+        },
+        {
+          "k": "Finish",
+          "v": "Oil-wax"
+        }
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "price": 24000,
+    "cat": "Декор",
+    "img": "catalog/decor/chair.png",
+    "ru": {
+      "name": "Кресло «Lima»",
+      "material": "Массив бука",
+      "desc": "Гнутый каркас из массива бука на традиционных шиповых соединениях, без единого металлического крепежа. Предмет, который переживёт мебель вокруг.",
+      "specs": [
+        {
+          "k": "Материал",
+          "v": "Массив бука"
+        },
+        {
+          "k": "Соединения",
+          "v": "Шиповые"
+        },
+        {
+          "k": "Отделка",
+          "v": "Масло-воск"
+        }
+      ]
+    },
+    "en": {
+      "name": "Lima Chair",
+      "material": "Solid beech",
+      "desc": "A bent beech frame on traditional mortise-and-tenon joints, without a single metal fastener. A piece that will outlast the furniture around it.",
+      "specs": [
+        {
+          "k": "Material",
+          "v": "Solid beech"
+        },
+        {
+          "k": "Joints",
+          "v": "Mortise & tenon"
+        },
+        {
+          "k": "Finish",
+          "v": "Oil-wax"
+        }
+      ]
+    }
+  }
+]
